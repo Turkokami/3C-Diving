@@ -1,0 +1,259 @@
+---
+/**
+ * Footer — visible NAP + the sitewide wiring floor (M3).
+ *
+ * The visible NAP here is rendered from the SAME `napPhone()` the LocalBusiness
+ * node reads, so the two cannot drift (Part 5.3).
+ *
+ * Address and hours are wrapped in guards. While B1 is open the footer states the
+ * service area instead of inventing a storefront — an honest `areaServed` line is
+ * a weaker signal than a real address, but a fabricated address is a disqualifying
+ * one (doctrine #6).
+ */
+import { business, napPhone, hasAddress } from '../data/business.ts';
+import { services } from '../data/services.ts';
+import { territoryLocations } from '../lib/geo.ts';
+import { routeExists, liveLinks } from '../lib/routes.ts';
+
+const nap = napPhone();
+const year = new Date().getFullYear();
+
+// Top service spokes get footer links so every page carries lateral wiring (M3).
+// Filtered to what is built — see lib/routes.ts.
+const footerServices = services.slice(0, 8).filter((s) => routeExists(`/services/${s.slug}/`));
+const footerLocations = territoryLocations();
+
+const companyLinks = liveLinks([
+  { name: 'About', href: '/about/' },
+  { name: 'Our standards', href: '/our-standards/' },
+  { name: 'Class & compliance', href: '/compliance/' },
+  { name: 'Marine reference library', href: '/marine-library/' },
+  { name: 'Case studies', href: '/case-studies/' },
+  { name: 'Request a quote', href: '/contact/' },
+]);
+
+const servicesHubLive = routeExists('/services/');
+const locationsHubLive = routeExists('/locations/');
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-col footer-nap">
+      <h2>{business.name}</h2>
+      <p class="footer-tagline">{business.tagline}</p>
+
+      <address>
+        {
+          hasAddress() && (
+            <span class="nap-line">
+              {business.address!.streetAddress}, {business.address!.addressLocality},{' '}
+              {business.address!.addressRegion} {business.address!.postalCode}
+            </span>
+          )
+        }
+        {
+          !hasAddress() && (
+            <span class="nap-line">Serving {business.areaServedSummary}</span>
+          )
+        }
+        <a class="nap-line nap-phone" href={nap.href}>{nap.display}</a>
+        <a class="nap-line" href={business.phoneSpanish.href} lang="es">
+          {business.phoneSpanish.display} (Español)
+        </a>
+        <a class="nap-line" href={`mailto:${business.email}`}>{business.email}</a>
+      </address>
+
+      {
+        business.hours && (
+          <ul class="footer-hours">
+            {business.hours.map((h) => (
+              <li>
+                {h.days.join(', ')}: {h.opens}–{h.closes}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    {
+      (footerServices.length > 0 || servicesHubLive) && (
+        <div class="footer-col">
+          <h3>Services</h3>
+          <ul>
+            {footerServices.map((s) => (
+              <li>
+                <a href={`/services/${s.slug}/`}>{s.name}</a>
+              </li>
+            ))}
+            {servicesHubLive && (
+              <li>
+                <a href="/services/">
+                  <strong>All services</strong>
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      )
+    }
+
+    <div class="footer-col">
+      <h3>Service area</h3>
+      <ul>
+        {
+          footerLocations.map((l) => (
+            <li>
+              {l.researched && routeExists(`/locations/${l.slug}/`) ? (
+                <a href={`/locations/${l.slug}/`}>{l.name}</a>
+              ) : (
+                <span>{l.name}</span>
+              )}
+            </li>
+          ))
+        }
+        {
+          locationsHubLive && (
+            <li>
+              <a href="/locations/">
+                <strong>All locations</strong>
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    {
+      companyLinks.length > 0 && (
+        <div class="footer-col">
+          <h3>Company</h3>
+          <ul>
+            {companyLinks.map((l) => (
+              <li>
+                <a href={l.href}>{l.name}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="wrap footer-legal">
+    <p>© {year} {business.legalName ?? business.name}. All rights reserved.</p>
+    <p class="footer-disclaimer">
+      Commercial diving services are performed to written dive plans under qualified
+      supervision. Scope, standards and acceptance criteria are defined per project{
+        routeExists('/our-standards/') ? (
+          <>
+            {' — see '}
+            <a href="/our-standards/">our standards</a>.
+          </>
+        ) : (
+          '.'
+        )
+      }
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--c-navy-900);
+    color: var(--c-steel-100);
+    margin-top: var(--s-8);
+    padding-block: var(--s-7) var(--s-5);
+    font-size: var(--t-sm);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .footer-grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    }
+  }
+
+  .site-footer h2 {
+    color: var(--c-white);
+    font-size: var(--t-lg);
+    margin-bottom: var(--s-2);
+  }
+  .site-footer h3 {
+    color: var(--c-white);
+    font-size: var(--t-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0 0 var(--s-3);
+  }
+
+  .footer-tagline {
+    color: var(--c-steel-300);
+    margin-bottom: var(--s-4);
+  }
+
+  .site-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-footer li {
+    margin-bottom: var(--s-2);
+  }
+
+  .site-footer a {
+    color: var(--c-steel-100);
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: var(--c-white);
+    text-decoration: underline;
+  }
+
+  address {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+  .nap-line {
+    display: block;
+  }
+  .nap-phone {
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    color: var(--c-white) !important;
+  }
+
+  .footer-hours {
+    margin-top: var(--s-3);
+    color: var(--c-steel-300);
+  }
+
+  .footer-legal {
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-navy-700);
+    color: var(--c-muted);
+    font-size: var(--t-xs);
+  }
+  .footer-legal p {
+    max-width: none;
+  }
+  .footer-disclaimer {
+    color: var(--c-muted);
+  }
+  .footer-legal a {
+    color: var(--c-steel-300);
+  }
+</style>

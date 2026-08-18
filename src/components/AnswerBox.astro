@@ -1,0 +1,53 @@
+---
+/**
+ * AnswerBox — the Quick Answer. Keystone M2/M4, universal contract block 1.
+ *
+ * Defect P0-8: the live site has no AEO layer at all. This is the cheapest win
+ * available and it is entirely absent.
+ *
+ * THE RULE OF ONE SOURCE. The same 40–60 words are used three times:
+ *   1. rendered here, directly under the H1
+ *   2. reused verbatim as the meta description
+ *   3. targeted by `speakable` in the WebPage node (`.answer-box`)
+ * Pages pass `answer` to BaseLayout, which does all three. A page never writes
+ * the answer twice, so the spoken answer and the visible answer cannot diverge.
+ *
+ * The 40–60 word band is enforced by the SEO auditor, not by hope.
+ */
+const { answer, label = 'Quick answer' } = Astro.props as {
+  answer: string;
+  label?: string;
+};
+---
+
+<div class="answer-box">
+  <p class="answer-label">{label}</p>
+  <p class="answer-text">{answer}</p>
+</div>
+
+<style>
+  .answer-box {
+    background: var(--c-steel-100);
+    border-left: 5px solid var(--c-steel-500);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: var(--s-4) var(--s-5);
+    margin: 0 0 var(--s-6);
+    max-width: var(--w-prose);
+  }
+
+  .answer-label {
+    margin: 0 0 var(--s-2);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-navy-700);
+  }
+
+  .answer-text {
+    margin: 0;
+    font-size: var(--t-lg);
+    line-height: var(--lh-snug);
+    color: var(--c-ink);
+  }
+</style>

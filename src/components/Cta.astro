@@ -1,0 +1,122 @@
+---
+/**
+ * Cta — the market-named call to action. Keystone dimension 8.
+ *
+ * Baseline scored 2/5 partly for a generic CTA. `market` defaults to the primary
+ * market but every page passes its own, so a Port Isabel page says Port Isabel.
+ * That single substitution is what separates a CTA from a banner.
+ *
+ * Emergency variant strips everything except the call — a vessel taking on water
+ * is not going to fill in a form.
+ */
+import { business, napPhone } from '../data/business.ts';
+import { routeExists } from '../lib/routes.ts';
+
+// The quote form is a Phase 2 page (and P1-3: its endpoint still needs confirming).
+// Until it exists the CTA is call-only rather than pointing at a 404.
+const quoteLive = routeExists('/contact/');
+
+const {
+  heading,
+  body,
+  market = business.primaryMarket,
+  variant = 'default',
+} = Astro.props as {
+  heading?: string;
+  body?: string;
+  market?: string;
+  variant?: 'default' | 'emergency';
+};
+
+const nap = napPhone();
+const isEmergency = variant === 'emergency';
+
+const resolvedHeading =
+  heading ?? (isEmergency ? 'Underwater emergency right now?' : `Need divers in ${market}?`);
+
+const resolvedBody =
+  body ??
+  (isEmergency
+    ? 'Call the line below. Tell us the vessel, the berth and what you are seeing, and we will tell you what we can mobilise and when.'
+    : `Tell us the vessel, the berth and the problem. We will come back with scope, method and what we can have in the water — no obligation.`);
+---
+
+<section class={`cta ${isEmergency ? 'cta-emergency' : ''}`} aria-labelledby="cta-heading">
+  <div class="cta-inner">
+    <div>
+      <h2 id="cta-heading">{resolvedHeading}</h2>
+      <p>{resolvedBody}</p>
+    </div>
+    <div class="cta-actions">
+      <a class="btn btn-primary" href={nap.href}>Call {nap.display}</a>
+      {
+        !isEmergency && quoteLive && (
+          <a class="btn btn-secondary" href="/contact/">
+            Request a quote
+          </a>
+        )
+      }
+      <a class="cta-es" href={business.phoneSpanish.href} lang="es">
+        ¿Prefiere español? {business.phoneSpanish.display}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    background: var(--c-navy-800);
+    color: var(--c-steel-100);
+    border-radius: var(--radius-lg);
+    padding: var(--s-6);
+    margin-top: var(--s-7);
+  }
+
+  .cta-emergency {
+    background: var(--c-navy-900);
+    border: 2px solid var(--c-amber-500);
+  }
+
+  .cta-inner {
+    display: grid;
+    gap: var(--s-5);
+    align-items: center;
+  }
+
+  @media (min-width: 820px) {
+    .cta-inner {
+      grid-template-columns: 1.5fr 1fr;
+      gap: var(--s-6);
+    }
+  }
+
+  .cta h2 {
+    color: var(--c-white);
+    margin-top: 0;
+    margin-bottom: var(--s-3);
+    font-size: var(--t-xl);
+  }
+
+  .cta p {
+    margin: 0;
+    color: var(--c-steel-100);
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+    align-items: stretch;
+  }
+
+  .cta-es {
+    color: var(--c-steel-300);
+    font-size: var(--t-sm);
+    text-align: center;
+    text-decoration: none;
+  }
+  .cta-es:hover {
+    color: var(--c-white);
+    text-decoration: underline;
+  }
+</style>

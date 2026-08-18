@@ -1,0 +1,11 @@
+# Normalise line endings. Without this, a Windows checkout rewrites every file to
+# CRLF and Vercel's Linux builder sees the whole tree as modified — noisy diffs and
+# spurious cache misses on every build.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.gz binary

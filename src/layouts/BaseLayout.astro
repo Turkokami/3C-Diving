@@ -1,0 +1,195 @@
+---
+/**
+ * BaseLayout — the universal page contract. Keystone Part 4.1.
+ *
+ * THE SINGLE EMITTER. `buildGraph()` is called here and nowhere else, and its
+ * output is printed into a genuine <script type="application/ld+json">. There is
+ * no SEO plugin on a static build, so the duplicate-emitter defect that dominates
+ * the WordPress portfolio cannot occur.
+ *
+ * ONE SOURCE PER FACT. A page hands this layout `answer`, `faqs` and `crumbs`
+ * exactly once. The layout then:
+ *   - renders the Quick Answer, and points `speakable` at it
+ *   - renders the FAQ block, and builds the FAQPage node from the same array
+ *   - renders the breadcrumb trail, and builds BreadcrumbList from the same array
+ *   - derives the meta description from the Quick Answer
+ * Nothing is written twice, so visible content and markup cannot disagree.
+ *
+ * Known-failure guards from Part 12.3 applied here:
+ *   - JSON-LD on a real <script>, never `set:html` on a pseudo-element
+ *   - meta description cut on a SENTENCE boundary, never mid-word
+ *   - canonical built by `absUrl()`, so it always matches the served trailing slash
+ */
+import { business } from '../data/business.ts';
+import { buildGraph, serialiseGraph, absUrl, type Crumb, type Faq, type PrimaryEntity } from '../lib/schema.ts';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PhoneBar from '../components/PhoneBar.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import AnswerBox from '../components/AnswerBox.astro';
+import FaqBlock from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import '../styles/tokens.css';
+
+interface Props {
+  /** ≤60 chars, unique sitewide, city front-loaded (M5). Validated by scripts/check-seo.mjs. */
+  title: string;
+  /**
+   * The page H1. Pass this OR supply an `h1` inside the `hero` slot — never both.
+   * Exactly one H1 per page is enforced by scripts/check-seo.mjs, so a page that
+   * gets this wrong fails the gate rather than shipping.
+   */
+  h1?: string;
+  /** The 40–60 word Quick Answer (M2/M4). Rendered, speakable-targeted, and the description source. */
+  answer: string;
+  /** Override only when the derived description would read badly. 110–165 chars. */
+  description?: string;
+  crumbs?: Crumb[];
+  faqs?: Faq[];
+  entity?: PrimaryEntity;
+  lang?: 'en' | 'es';
+  /** CTA market name — a Port Isabel page says Port Isabel. */
+  market?: string;
+  ctaVariant?: 'default' | 'emergency';
+  noindex?: boolean;
+  datePublished?: string;
+  dateModified?: string;
+}
+
+const {
+  title,
+  h1,
+  answer,
+  description,
+  crumbs = [],
+  faqs = [],
+  entity,
+  lang = 'en',
+  market,
+  ctaVariant = 'default',
+  noindex = false,
+  datePublished,
+  dateModified,
+} = Astro.props as Props;
+
+const path = Astro.url.pathname;
+const canonical = absUrl(path);
+
+/**
+ * Derive the meta description from the Quick Answer.
+ *
+ * The Quick Answer is 40–60 words (~250–350 chars) and a meta description must
+ * land in 110–165, so the two cannot be the identical string. We take WHOLE
+ * SENTENCES from the front of the answer until adding another would overflow.
+ * Cutting on sentence boundaries is what makes the "meta description ends
+ * mid-word" failure in Part 12.3 structurally impossible — there is no
+ * character-count truncation anywhere in this path.
+ */
+function deriveDescription(src: string, max = 165, min = 110): string {
+  const sentences = src.trim().match(/[^.!?]+[.!?]+(\s|$)/g) ?? [src.trim()];
+  let out = '';
+  for (const s of sentences) {
+    const next = (out + s).trim();
+    if (next.length > max) break;
+    out = next;
+  }
+  // A single opening sentence longer than `max` leaves `out` empty — fall back to
+  // that sentence rather than shipping nothing, and let the auditor flag it.
+  if (!out) out = sentences[0].trim();
+  // Under the floor and more material available: add the next sentence anyway.
+  if (out.length < min && sentences.length > 1 && out === sentences[0].trim()) {
+    const two = (sentences[0] + sentences[1]).trim();
+    if (two.length <= max) out = two;
+  }
+  return out;
+}
+
+const metaDescription = description ?? deriveDescription(answer);
+
+const graph = buildGraph({
+  path,
+  title,
+  description: metaDescription,
+  crumbs,
+  faqs,
+  entity,
+  lang,
+  datePublished,
+  dateModified,
+});
+
+const jsonld = serialiseGraph(graph);
+const ogImage = absUrl(business.socialImage.src);
+const htmlLang = lang === 'es' ? 'es-US' : 'en-US';
+---
+
+<!doctype html>
+<html lang={htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={metaDescription} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={business.socialImage.alt} />
+    <meta property="og:image:width" content={String(business.socialImage.width)} />
+    <meta property="og:image:height" content={String(business.socialImage.height)} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_US' : 'en_US'} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#061a2b" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    <!--
+      A real <script> element. Part 12.3: putting `set:html` on a pseudo-element
+      double-escapes the graph and renders it as visible text on the page.
+    -->
+    <script type="application/ld+json" is:inline set:html={jsonld} />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <Header currentPath={path} />
+
+    <div class="wrap">
+      <Breadcrumbs crumbs={crumbs} />
+    </div>
+
+    <main id="main">
+      <div class="wrap">
+        <slot name="hero" />
+
+        <div class="page-body">
+          {h1 && <h1>{h1}</h1>}
+          <AnswerBox answer={answer} />
+          <slot />
+          <FaqBlock faqs={faqs} />
+          <Cta market={market} variant={ctaVariant} />
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+    <PhoneBar />
+  </body>
+</html>
+
+<style>
+  .page-body {
+    padding-block: var(--s-5) var(--s-7);
+  }
+</style>

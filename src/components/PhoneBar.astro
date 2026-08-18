@@ -1,0 +1,74 @@
+---
+/**
+ * PhoneBar — sticky click-to-call. Keystone dimension 8 (Convert).
+ *
+ * Baseline scored 2/5 on conversion specifically for having no sticky
+ * click-to-call. In this vertical the highest-intent visitor is standing on a
+ * dock with a problem right now, so the call path is never more than one thumb
+ * away on mobile. Hidden at >=768px where the header phone is already visible.
+ *
+ * The Spanish line is surfaced beside it, not buried — P1-1: this is a ~93%
+ * Hispanic border market and the business already staffs a Spanish number.
+ */
+import { business, napPhone } from '../data/business.ts';
+
+const nap = napPhone();
+const showSpanish = nap.href !== business.phoneSpanish.href;
+---
+
+<div class="phonebar" role="complementary" aria-label="Contact shortcuts">
+  <a class="pb-call" href={nap.href}>
+    <span aria-hidden="true">📞</span>
+    <span>Call {nap.display}</span>
+  </a>
+  {
+    showSpanish && (
+      <a class="pb-es" href={business.phoneSpanish.href} lang="es">
+        <span aria-hidden="true">🇲🇽</span>
+        <span>Español</span>
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .phonebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    height: var(--phonebar-h);
+    box-shadow: 0 -2px 12px rgba(6, 26, 43, 0.25);
+  }
+
+  .phonebar a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: var(--t-sm);
+  }
+
+  .pb-call {
+    flex: 1;
+    background: var(--c-amber-500);
+    color: var(--c-white);
+  }
+
+  .pb-es {
+    flex: 0 0 34%;
+    background: var(--c-navy-800);
+    color: var(--c-white);
+    border-left: 1px solid var(--c-navy-600);
+  }
+
+  @media (min-width: 768px) {
+    .phonebar {
+      display: none;
+    }
+  }
+</style>

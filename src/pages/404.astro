@@ -1,0 +1,51 @@
+---
+/**
+ * 404 — noindex, and a real route back into the site.
+ *
+ * A dead end on a 404 wastes the one signal it carries: someone wanted something
+ * specific and did not get it. The service and location lists below are rendered
+ * from the same data arrays the routes build from, so this page cannot rot as
+ * pages are added.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { services } from '../data/services.ts';
+import { napPhone } from '../data/business.ts';
+import { routeExists } from '../lib/routes.ts';
+
+const nap = napPhone();
+
+// Only offer routes that exist — a 404 that links to more 404s is worse than useless.
+const liveServices = services.filter((s) => routeExists(`/services/${s.slug}/`));
+
+const answer =
+  'That page could not be found. It may have moved, or the link may be wrong. Use the service list below to find what you were after, or call us directly and we will point you to the right place.';
+---
+
+<BaseLayout
+  title="Page not found | 3rd Coast Commercial Diving"
+  answer={answer}
+  description="That page could not be found. Browse our commercial diving services or call 3rd Coast Diving directly for help finding what you need."
+  h1="Page not found"
+  crumbs={[{ name: 'Home', href: '/' }, { name: 'Page not found', href: '/404/' }]}
+  noindex={true}
+>
+  {
+    liveServices.length > 0 && (
+      <>
+        <h2>Try one of these</h2>
+        <ul>
+          {liveServices.map((s) => (
+            <li>
+              <a href={`/services/${s.slug}/`}>{s.name}</a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+
+  <p>
+    Still stuck? Call <a href={nap.href}>{nap.display}</a> and tell us what you were
+    looking for, or go back to the <a href="/">home page</a>.
+  </p>
+</BaseLayout>

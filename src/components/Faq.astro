@@ -1,0 +1,88 @@
+---
+/**
+ * Faq — visible FAQ block. Universal contract block 5, defect P0-8.
+ *
+ * SINGLE SOURCE WITH THE SCHEMA. The page passes ONE `faqs` array to BaseLayout;
+ * BaseLayout renders it here and feeds the identical array to the FAQPage node.
+ * A visible FAQ that disagrees with its markup is a manual-action risk, and the
+ * only reliable way to prevent it is to make a second source impossible.
+ *
+ * Native <details> — no JS, no hydration, keyboard accessible, and the answer
+ * text is in the DOM for crawlers whether or not it is expanded.
+ */
+import type { Faq } from '../lib/schema.ts';
+
+const { faqs, heading = 'Frequently asked questions' } = Astro.props as {
+  faqs: Faq[];
+  heading?: string;
+};
+---
+
+{
+  faqs.length > 0 && (
+    <section class="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">{heading}</h2>
+      <div class="faq-list">
+        {faqs.map((f, i) => (
+          <details class="faq-item" open={i === 0}>
+            <summary>{f.question}</summary>
+            <div class="faq-answer">
+              <p>{f.answer}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .faq {
+    margin-top: var(--s-7);
+  }
+
+  .faq-list {
+    max-width: var(--w-prose);
+    border-top: 1px solid var(--c-line);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  summary {
+    cursor: pointer;
+    padding: var(--s-4) var(--s-5) var(--s-4) 0;
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    color: var(--c-ink);
+    line-height: var(--lh-snug);
+    list-style: none;
+    position: relative;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: var(--s-4);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--c-steel-500);
+  }
+
+  .faq-item[open] summary::after {
+    content: '−';
+  }
+
+  .faq-answer {
+    padding-bottom: var(--s-4);
+  }
+  .faq-answer p {
+    margin: 0;
+  }
+</style>

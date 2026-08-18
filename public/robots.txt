@@ -1,0 +1,29 @@
+# 3rd Coast Commercial Diving & Salvage — 3cdiving.com
+# Defect P1-5: robots.txt was unverified at audit. This is the canonical file.
+#
+# Nothing is disallowed. This is a brochure site with no faceted navigation, no
+# search results, no session parameters and no duplicate print views — the usual
+# reasons to block a crawler do not exist here, and blocking on speculation is
+# how crawl budget problems get invented rather than solved.
+
+User-agent: *
+Allow: /
+
+# Answer engines are a first-class audience for this build (M2/M4), not an
+# afterthought. The compliance and marine-library clusters exist to be cited.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://3cdiving.com/sitemap-index.xml

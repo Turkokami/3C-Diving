@@ -1,0 +1,72 @@
+---
+/**
+ * Breadcrumbs — visible trail, mirroring the BreadcrumbList node exactly.
+ *
+ * BaseLayout passes the same `crumbs` array to this component and to
+ * `buildGraph()`, so the rendered trail and the markup are the same data. Part
+ * 5.1 requires the BreadcrumbList to mirror the URL taxonomy; rendering from a
+ * second hand-written list is how that promise quietly breaks.
+ */
+import type { Crumb } from '../lib/schema.ts';
+
+const { crumbs } = Astro.props as { crumbs: Crumb[] };
+---
+
+{
+  crumbs.length > 1 && (
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        {crumbs.map((c, i) => (
+          <li>
+            {i < crumbs.length - 1 ? (
+              <a href={c.href}>{c.name}</a>
+            ) : (
+              <span aria-current="page">{c.name}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<style>
+  .crumbs {
+    padding-block: var(--s-4) 0;
+    font-size: var(--t-sm);
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+
+  .crumbs li {
+    margin: 0;
+    color: var(--c-muted);
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: var(--s-2);
+    color: var(--c-line);
+  }
+
+  .crumbs a {
+    color: var(--c-muted);
+    text-decoration: none;
+  }
+  .crumbs a:hover {
+    color: var(--c-steel-500);
+    text-decoration: underline;
+  }
+  .crumbs [aria-current='page'] {
+    color: var(--c-ink);
+    font-weight: 600;
+  }
+</style>

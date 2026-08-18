@@ -1,0 +1,232 @@
+---
+/**
+ * Home — Phase 1 foundation route.
+ *
+ * SCOPE NOTE. This is the Phase 1 exit criterion: "a single placeholder route
+ * deploys green on Vercel with a validating graph." It is deliberately NOT the
+ * finished home page — that is Phase 2, written to the 3,000–5,000 word floor
+ * against CONTENT_BRIEF.md. What it does prove is that every foundation piece
+ * works end to end: the entity graph, the pending-input guards, the AEO layer,
+ * the wiring contract and the conversion path.
+ *
+ * Everything stated below is drawn from the live site's own claims or from the
+ * verified-facts ledger. Nothing is invented (doctrine #6).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { business } from '../data/business.ts';
+import { services } from '../data/services.ts';
+import { territoryLocations } from '../lib/geo.ts';
+import { routeExists } from '../lib/routes.ts';
+import { pendingFields } from '../data/business.ts';
+
+const locations = territoryLocations();
+
+/**
+ * The Quick Answer. Note the first sentence is deliberately self-contained and
+ * 110–165 characters: BaseLayout derives the meta description by taking whole
+ * sentences from the front, so sentence one IS the description. Writing it that
+ * way is how the two stay identical in substance without being the same string.
+ */
+const answer =
+  '3rd Coast Commercial Diving & Salvage is a commercial dive contractor on the South Texas Gulf Coast, working the Port of Brownsville and Port Isabel. We handle underwater inspection, hull cleaning, propeller and anode work, underwater welding support, marine salvage and 24-hour emergency response.';
+
+const faqs = [
+  {
+    question: 'What areas does 3rd Coast Commercial Diving cover?',
+    answer:
+      'We work the Port of Brownsville, Brownsville, Port Isabel, South Padre Island, Brazos Santiago Pass, Harlingen, Los Fresnos and Laguna Vista, along with the wider South Texas Gulf Coast. Being based on this stretch of coast means shorter mobilisation and a crew that already knows the berths and the channel.',
+  },
+  {
+    question: 'Do you respond to underwater emergencies?',
+    answer:
+      'Yes. Time-sensitive emergency mobilisation is one of our core services — a fouled propeller, a vessel taking on water at the berth, a blocked sea chest or a dropped object in the channel. Call the number on this page and tell us the vessel, the berth and what you are seeing.',
+  },
+  {
+    question: 'Do you have Spanish-speaking staff?',
+    answer:
+      'Yes. We run a dedicated Spanish line at (956) 455-8476 for operators, agents and crews who would rather do business in Spanish. It reaches the same team as the main line.',
+  },
+  {
+    question: 'What kind of work do you do for vessel operators?',
+    answer:
+      'Hull inspections, propeller clearing, inspection and polishing, hull cleaning, anode replacement, UWILD and in-water survey support, sea chest inspection, overboard blanking and cofferdam support, and underwater weld repair support — the routine in-water work that keeps a vessel trading without a drydock booking.',
+  },
+];
+
+// Surfaced in the build log, never on the page. See scripts/pending-report.mjs.
+const pending = pendingFields();
+---
+
+<BaseLayout
+  title="Commercial Diving Brownsville TX | 3rd Coast Diving"
+  answer={answer}
+  crumbs={[{ name: 'Home', href: '/' }]}
+  faqs={faqs}
+  market={business.primaryMarket}
+  entity={{
+    kind: 'service',
+    name: 'Commercial Diving & Marine Salvage',
+    description:
+      'Commercial diving, underwater inspection, hull and propeller services, underwater welding support and marine salvage on the South Texas Gulf Coast.',
+    serviceType: 'Commercial Diving',
+  }}
+>
+  <section slot="hero" class="hero">
+    <p class="hero-eyebrow">Port of Brownsville &middot; Port Isabel &middot; South Padre Island</p>
+    <h1>Commercial diving and marine salvage on the South Texas Gulf Coast</h1>
+    <p class="hero-sub">{business.tagline}</p>
+  </section>
+
+  <h2>What we do</h2>
+  <p>
+    3rd Coast works in-water so vessels and marine infrastructure keep operating. The
+    fourteen services below cover routine hull and running-gear maintenance, inspection
+    and survey support, underwater repair and welding support, marine construction and
+    salvage, and time-sensitive emergency response.
+  </p>
+
+  <ul class="service-grid">
+    {
+      services.map((s) => (
+        <li>
+          {routeExists(`/services/${s.slug}/`) ? (
+            <a href={`/services/${s.slug}/`}>{s.name}</a>
+          ) : (
+            <span class="pending">{s.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>Where we work</h2>
+  <p>
+    Our advantage on this coast is proximity. Being local to the Brownsville Ship
+    Channel means shorter mobilisation, lower standby cost and a crew that already
+    knows the berths, the passes and the traffic.
+  </p>
+
+  <ul class="location-list">
+    {
+      locations.map((l) => (
+        <li>
+          {l.researched && routeExists(`/locations/${l.slug}/`) ? (
+            <a href={`/locations/${l.slug}/`}>{l.name}</a>
+          ) : (
+            <span>{l.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>How to reach us</h2>
+  <p>
+    Call {business.phone.display} for commercial diving enquiries and emergency
+    mobilisation, or {business.phoneSpanish.display} for service in Spanish. Email{' '}
+    <a href={`mailto:${business.email}`}>{business.email}</a>.
+  </p>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--c-navy-900), var(--c-navy-700));
+    color: var(--c-white);
+    border-radius: var(--radius-lg);
+    padding: var(--s-7) var(--s-6);
+    margin-top: var(--s-4);
+  }
+
+  .hero-eyebrow {
+    margin: 0 0 var(--s-3);
+    color: var(--c-amber-400);
+    font-size: var(--t-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .hero h1 {
+    color: var(--c-white);
+    margin-bottom: var(--s-4);
+    max-width: 20ch;
+  }
+
+  .hero-sub {
+    margin: 0;
+    color: var(--c-steel-100);
+    font-size: var(--t-lg);
+    max-width: 60ch;
+  }
+
+  .service-grid {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: 1fr;
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+
+  @media (min-width: 600px) {
+    .service-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .service-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .service-grid li {
+    margin: 0;
+  }
+
+  .service-grid a {
+    display: block;
+    padding: var(--s-4);
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    color: var(--c-navy-700);
+    font-weight: 600;
+    text-decoration: none;
+    height: 100%;
+  }
+
+  .service-grid a:hover {
+    border-color: var(--c-steel-500);
+    background: var(--c-steel-100);
+  }
+
+  /* A spoke whose page has not been built yet: named, but not yet a link. */
+  .service-grid .pending {
+    display: block;
+    padding: var(--s-4);
+    background: var(--c-white);
+    border: 1px dashed var(--c-line);
+    border-radius: var(--radius);
+    color: var(--c-muted);
+    font-weight: 600;
+    height: 100%;
+  }
+
+  .location-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-3);
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+
+  .location-list li {
+    margin: 0;
+    padding: var(--s-2) var(--s-3);
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    font-size: var(--t-sm);
+  }
+</style>
