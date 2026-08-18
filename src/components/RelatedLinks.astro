@@ -94,7 +94,7 @@ const anything = problems.length || library.length || siblings.length || hubLive
   .related {
     margin-top: var(--s-7);
     padding-top: var(--s-5);
-    border-top: 2px solid var(--c-line);
+    border-top: 2px solid var(--c-border);
   }
 
   .related-group {
@@ -129,16 +129,19 @@ const anything = problems.length || library.length || siblings.length || hubLive
   .related li a {
     display: block;
     padding: var(--s-3);
-    background: var(--c-surface);
+    background: var(--c-card);
+    border: 1px solid var(--c-border-soft);
     border-radius: var(--radius);
     text-decoration: none;
-    color: var(--c-navy-700);
+    color: var(--c-muted);
     font-weight: 600;
     font-size: var(--t-sm);
   }
 
   .related li a:hover {
-    background: var(--c-steel-100);
+    background: var(--c-card-2);
+    border-color: var(--c-border);
+    color: var(--c-text);
   }
 
   .related-up {

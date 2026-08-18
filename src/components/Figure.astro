@@ -1,0 +1,73 @@
+---
+/**
+ * Figure — a real photograph with an honest caption. Keystone M6 / M7.
+ *
+ * Reads from `src/data/media.ts`, so alt text lives with the photo rather than
+ * being retyped per page. Retyped alt is how a photo ends up described three
+ * different ways on three pages, one of which is wrong.
+ *
+ * `priority` marks the LCP image on a page so it loads eagerly and is fetched at
+ * high priority; everything else is lazy. Width and height are always emitted to
+ * reserve layout space, because an image that pops in and shoves the text down is
+ * a CLS failure and this build targets 5/5 on performance.
+ */
+import type { Photo } from '../data/media.ts';
+import { photoSrc } from '../data/media.ts';
+
+interface Props {
+  photo: Photo;
+  /** Show the caption. Off for pure hero use where the caption would compete. */
+  showCaption?: boolean;
+  /** Set on the single largest above-the-fold image. */
+  priority?: boolean;
+  sizes?: string;
+}
+
+const {
+  photo,
+  showCaption = true,
+  priority = false,
+  sizes = '(min-width: 900px) 800px, 100vw',
+} = Astro.props as Props;
+
+const { src, srcset } = photoSrc(photo);
+---
+
+<figure class="figure">
+  <img
+    src={src}
+    srcset={srcset}
+    sizes={sizes}
+    alt={photo.alt}
+    width={photo.width}
+    height={photo.height}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding={priority ? 'sync' : 'async'}
+    fetchpriority={priority ? 'high' : 'auto'}
+  />
+  {showCaption && photo.caption && <figcaption>{photo.caption}</figcaption>}
+</figure>
+
+<style>
+  .figure {
+    margin: var(--s-6) 0;
+    max-width: 900px;
+  }
+
+  .figure img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--c-border);
+    background: var(--c-card);
+  }
+
+  figcaption {
+    margin-top: var(--s-3);
+    font-size: var(--t-sm);
+    line-height: var(--lh-snug);
+    color: var(--c-muted-2);
+    font-family: var(--font-sans);
+    max-width: var(--w-prose);
+  }
+</style>

@@ -9,6 +9,7 @@
  */
 import { business, napPhone } from '../data/business.ts';
 import { liveLinks } from '../lib/routes.ts';
+import { logo } from '../data/media.ts';
 
 const { currentPath = '/' } = Astro.props as { currentPath?: string };
 const nap = napPhone();
@@ -34,7 +35,15 @@ const isCurrent = (href: string) =>
 <header class="site-header">
   <div class="wrap header-inner">
     <a href="/" class="brand" aria-label={`${business.name} — home`}>
-      <span class="brand-mark">3C</span>
+      <img
+        class="brand-mark"
+        src={logo.src}
+        alt=""
+        width="48"
+        height="48"
+        loading="eager"
+        decoding="async"
+      />
       <span class="brand-text">
         <strong>3rd Coast</strong>
         <span>Commercial Diving &amp; Salvage</span>
@@ -64,9 +73,13 @@ const isCurrent = (href: string) =>
 
 <style>
   .site-header {
-    background: var(--c-navy-900);
-    color: var(--c-white);
-    border-bottom: 3px solid var(--c-amber-500);
+    background: rgba(13, 14, 16, 0.86);
+    backdrop-filter: blur(10px);
+    color: var(--c-text);
+    border-bottom: 1px solid var(--c-border);
+    position: sticky;
+    top: 0;
+    z-index: 40;
   }
 
   .header-inner {
@@ -81,23 +94,19 @@ const isCurrent = (href: string) =>
     display: flex;
     align-items: center;
     gap: var(--s-3);
-    color: var(--c-white);
+    color: var(--c-text);
     text-decoration: none;
     margin-right: auto;
   }
 
+  /* The real emblem. alt="" because the adjacent brand text says the same thing —
+     announcing it twice is noise for a screen reader. */
   .brand-mark {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius);
-    background: var(--c-amber-500);
-    color: var(--c-navy-900);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.1rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     flex: none;
+    border: 1px solid var(--c-border);
   }
 
   .brand-text {
@@ -111,7 +120,7 @@ const isCurrent = (href: string) =>
   }
   .brand-text span {
     font-size: var(--t-xs);
-    color: var(--c-steel-300);
+    color: var(--c-muted-2);
   }
 
   .nav-list {
@@ -127,7 +136,7 @@ const isCurrent = (href: string) =>
     margin: 0;
   }
   .nav-list a {
-    color: var(--c-steel-100);
+    color: var(--c-muted);
     text-decoration: none;
     font-size: var(--t-sm);
     font-weight: 600;
@@ -136,21 +145,21 @@ const isCurrent = (href: string) =>
   }
   .nav-list a:hover,
   .nav-list a[aria-current='page'] {
-    color: var(--c-white);
-    border-bottom: 2px solid var(--c-amber-500);
+    color: var(--c-text);
+    border-bottom: 2px solid var(--c-copper);
   }
 
   .header-phone {
     display: none;
     flex-direction: column;
     text-align: right;
-    color: var(--c-white);
+    color: var(--c-text);
     text-decoration: none;
     line-height: 1.2;
   }
   .header-phone-label {
     font-size: var(--t-xs);
-    color: var(--c-amber-400);
+    color: var(--c-copper-l);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-weight: 700;

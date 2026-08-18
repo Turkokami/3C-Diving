@@ -1,64 +1,80 @@
 /**
- * tokens.css — the brand system. Keystone dimension 7 (Design).
+ * tokens.css — the brand system.
  *
- * Palette reasoning: the buyer is a port engineer, a class surveyor or a vessel
- * operator, so the system reads as marine-industrial rather than consumer-marine
- * — deep channel navy as the ground, a high-visibility safety amber for action,
- * and a single steel accent. Amber is reserved exclusively for CTAs and the
- * emergency path so that "the orange thing" always means "this is how you act".
+ * THIS IS THE OWNER'S ACTUAL BRAND, not an invented one. Every value in the
+ * "Brand, as built" block below is lifted directly from the CSS of the existing
+ * 3cdiving.com page:
  *
- * All colour is declared as tokens here and nowhere else, so a rebrand is one file.
+ *     --bg #0d0e10 · --bg-soft #14161a · --bg-card #1a1c21 · --bg-card-2 #23262c
+ *     --text #ffffff · --muted #c7cbd1 · --muted-2 #9aa0a9
+ *     --border rgba(255,255,255,.1) · --border-soft rgba(255,255,255,.06)
+ *     --radius-xl 30px · --radius-2xl 34px · buttons 18px
+ *     font-family: Georgia, "Times New Roman", serif
+ *     primary button: linear-gradient(135deg, #70737c, #4a4d54)
+ *
+ * The identity is dark charcoal, brushed pewter and a serif voice — which is the
+ * right call, because the logo is a pewter dive-helmet emblem that only reads
+ * properly on near-black. An earlier version of this file used a light navy and
+ * amber palette that had nothing to do with the business.
+ *
+ * ONE DELIBERATE ADDITION. The original site draws its primary button in the same
+ * greys as its cards, so nothing on the page signals "this is the action". We keep
+ * the pewter gradient as the brand's own button, and add a single restrained
+ * copper — sampled from the helmet in the logo, so it is drawn from the brand
+ * rather than imposed on it — reserved exclusively for the phone and emergency
+ * paths. It is the only saturated colour in the system, which is exactly what
+ * makes it work as a signal.
  */
 
 :root {
-  /* ── Brand ─────────────────────────────────────────────────────────── */
-  --c-navy-900: #061a2b;
-  --c-navy-800: #0a2740;
-  --c-navy-700: #0f3554;
-  --c-navy-600: #16456b;
-  --c-steel-500: #2f7ba8;
-  --c-steel-300: #7fb6d4;
-  --c-steel-100: #dbeaf3;
+  /* ── Brand, as built ──────────────────────────────────────────────── */
+  --c-bg: #0d0e10;
+  --c-bg-soft: #14161a;
+  --c-card: #1a1c21;
+  --c-card-2: #23262c;
 
-  /* High-visibility action colour — CTAs and the emergency path only. */
-  --c-amber-600: #c8620a;
-  --c-amber-500: #e8791a;
-  --c-amber-400: #f59b48;
-  --c-amber-100: #fdf0e3;
+  --c-text: #ffffff;
+  --c-muted: #c7cbd1;
+  --c-muted-2: #9aa0a9;
 
-  /* ── Neutrals ──────────────────────────────────────────────────────── */
-  --c-ink: #10202c;
-  --c-body: #35505f;
-  --c-muted: #63798a;
-  --c-line: #d8e2e9;
-  --c-surface: #f4f8fa;
-  --c-white: #ffffff;
+  --c-border: rgba(255, 255, 255, 0.1);
+  --c-border-soft: rgba(255, 255, 255, 0.06);
 
-  /* ── Semantic ──────────────────────────────────────────────────────── */
-  --c-bg: var(--c-white);
-  --c-fg: var(--c-ink);
-  --c-accent: var(--c-steel-500);
-  --c-action: var(--c-amber-500);
-  --c-action-hover: var(--c-amber-600);
+  --c-pewter: #70737c;
+  --c-pewter-d: #4a4d54;
+  --c-pewter-l: #7c8088;
 
-  /* ── Type ──────────────────────────────────────────────────────────── */
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'Segoe UI Semibold', system-ui, -apple-system, Arial, sans-serif;
+  /* Sampled from the helmet in the emblem. Phone + emergency only. */
+  --c-copper: #b5763a;
+  --c-copper-l: #c98c4d;
+  --c-copper-d: #8f5a29;
 
-  /* Fluid scale — clamps so nothing needs a breakpoint to stay readable. */
+  /* ── Semantic ─────────────────────────────────────────────────────── */
+  --c-fg: var(--c-text);
+  --c-action: var(--c-copper);
+  --c-action-hover: var(--c-copper-l);
+  --c-link: #b9c6d1;
+  --c-link-hover: #ffffff;
+
+  /* ── Type — Georgia, as the brand uses ────────────────────────────── */
+  --font-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-serif);
+  --font-body: var(--font-serif);
+
   --t-xs: 0.8125rem;
   --t-sm: 0.9375rem;
-  --t-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
-  --t-lg: clamp(1.125rem, 1.08rem + 0.22vw, 1.25rem);
-  --t-xl: clamp(1.3rem, 1.2rem + 0.5vw, 1.6rem);
-  --t-2xl: clamp(1.6rem, 1.4rem + 0.9vw, 2.15rem);
-  --t-3xl: clamp(2rem, 1.65rem + 1.6vw, 3rem);
+  --t-base: clamp(1.02rem, 0.99rem + 0.16vw, 1.11rem);
+  --t-lg: clamp(1.14rem, 1.09rem + 0.24vw, 1.3rem);
+  --t-xl: clamp(1.35rem, 1.22rem + 0.55vw, 1.7rem);
+  --t-2xl: clamp(1.65rem, 1.42rem + 1vw, 2.3rem);
+  --t-3xl: clamp(2.05rem, 1.65rem + 1.75vw, 3.15rem);
 
-  --lh-tight: 1.18;
-  --lh-snug: 1.35;
-  --lh-body: 1.68;
+  --lh-tight: 1.16;
+  --lh-snug: 1.34;
+  --lh-body: 1.72;
 
-  /* ── Space / layout ────────────────────────────────────────────────── */
+  /* ── Space / layout ───────────────────────────────────────────────── */
   --s-1: 0.25rem;
   --s-2: 0.5rem;
   --s-3: 0.75rem;
@@ -69,16 +85,19 @@
   --s-8: 4rem;
   --s-9: 6rem;
 
-  --w-prose: 72ch;
-  --w-page: 1180px;
-  --radius: 6px;
-  --radius-lg: 12px;
+  --w-prose: 70ch;
+  --w-page: 1240px; /* --container, as built */
 
-  --shadow-sm: 0 1px 2px rgba(6, 26, 43, 0.08);
-  --shadow-md: 0 4px 16px rgba(6, 26, 43, 0.1);
+  /* Generous radii, as the brand uses */
+  --radius: 14px;
+  --radius-btn: 18px;
+  --radius-lg: 30px;
+  --radius-xl: 34px;
 
-  /* Height of the sticky mobile call bar — pages pad their bottom by this. */
-  --phonebar-h: 56px;
+  --shadow: 0 22px 48px rgba(0, 0, 0, 0.32);
+  --shadow-sm: 0 10px 26px rgba(0, 0, 0, 0.35);
+
+  --phonebar-h: 58px;
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────── */
@@ -109,13 +128,40 @@ html {
 body {
   margin: 0;
   background: var(--c-bg);
-  color: var(--c-body);
-  font-family: var(--font-sans);
+  color: var(--c-muted);
+  font-family: var(--font-body);
   font-size: var(--t-base);
   line-height: var(--lh-body);
   text-rendering: optimizeLegibility;
-  /* Clears the sticky click-to-call bar on mobile. */
   padding-bottom: var(--phonebar-h);
+  min-height: 100vh;
+  position: relative;
+}
+
+/**
+ * The emblem watermark, exactly as the brand does it: the logo fixed behind the
+ * page under a heavy charcoal wash. Kept subtle enough that body text stays
+ * comfortably above the contrast floor, and dropped entirely on small screens
+ * where it would cost a large image download for something nobody can make out.
+ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(8, 9, 11, 0.9), rgba(8, 9, 11, 0.94)),
+    url('/brand/logo-512.webp');
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  background-size: cover, min(78vw, 900px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@media (max-width: 700px) {
+  body::before {
+    background-image: linear-gradient(rgba(8, 9, 11, 0.9), rgba(8, 9, 11, 0.94));
+  }
 }
 
 @media (min-width: 768px) {
@@ -128,16 +174,17 @@ h1,
 h2,
 h3,
 h4 {
-  color: var(--c-ink);
+  color: var(--c-text);
   font-family: var(--font-display);
   line-height: var(--lh-tight);
   margin: 0 0 var(--s-4);
   text-wrap: balance;
+  font-weight: 700;
 }
 
 h1 {
   font-size: var(--t-3xl);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
 }
 h2 {
   font-size: var(--t-2xl);
@@ -164,12 +211,18 @@ li {
   margin-bottom: var(--s-2);
 }
 
+strong {
+  color: var(--c-text);
+}
+
 a {
-  color: var(--c-steel-500);
-  text-underline-offset: 0.15em;
+  color: var(--c-link);
+  text-underline-offset: 0.16em;
+  text-decoration-color: rgba(255, 255, 255, 0.28);
 }
 a:hover {
-  color: var(--c-navy-700);
+  color: var(--c-link-hover);
+  text-decoration-color: currentColor;
 }
 
 img {
@@ -185,23 +238,22 @@ table {
 }
 th,
 td {
-  border: 1px solid var(--c-line);
-  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--c-border);
+  padding: var(--s-3);
   text-align: left;
 }
 th {
-  background: var(--c-surface);
-  color: var(--c-ink);
+  background: var(--c-card-2);
+  color: var(--c-text);
 }
 
-/* Wide content scrolls inside itself; the page body never scrolls sideways. */
 .scroll-x {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 :focus-visible {
-  outline: 3px solid var(--c-amber-500);
+  outline: 3px solid var(--c-copper-l);
   outline-offset: 2px;
 }
 
@@ -221,17 +273,18 @@ th {
 }
 
 .section {
-  padding-block: var(--s-7);
+  padding-block: var(--s-8);
 }
 
 .skip-link {
   position: absolute;
   left: -9999px;
   top: 0;
-  background: var(--c-amber-500);
-  color: var(--c-white);
+  background: var(--c-copper);
+  color: #fff;
   padding: var(--s-3) var(--s-4);
   z-index: 100;
+  border-radius: 0 0 var(--radius) 0;
 }
 .skip-link:focus {
   left: 0;
@@ -246,6 +299,37 @@ th {
   white-space: nowrap;
 }
 
+/** Frosted card, as the brand uses. */
+.card {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: var(--s-5);
+}
+
+/** Rounded pill label, as the brand uses. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 9px 16px;
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
+  );
+  color: #e6e8eb;
+  font-size: var(--t-sm);
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+}
+
 /* ── Buttons ───────────────────────────────────────────────────────────── */
 
 .btn {
@@ -253,41 +337,51 @@ th {
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  padding: var(--s-3) var(--s-5);
-  border-radius: var(--radius);
-  font-weight: 600;
-  font-size: var(--t-base);
+  padding: 14px 22px;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--t-sm);
   text-decoration: none;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  min-height: 48px; /* touch target */
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  min-height: 48px;
+  color: var(--c-text);
 }
 
+/** The action button. The only saturated colour in the system. */
 .btn-primary {
-  background: var(--c-action);
-  color: var(--c-white);
+  background: linear-gradient(135deg, var(--c-copper-l), var(--c-copper-d));
+  box-shadow: var(--shadow-sm);
+  color: #fff;
 }
 .btn-primary:hover {
-  background: var(--c-action-hover);
-  color: var(--c-white);
+  background: linear-gradient(135deg, #d59a5c, var(--c-copper));
+  color: #fff;
+}
+
+/** The brand's own pewter button, for secondary actions. */
+.btn-pewter {
+  background: linear-gradient(135deg, var(--c-pewter), var(--c-pewter-d));
+  box-shadow: var(--shadow-sm);
+  color: #fff;
+}
+.btn-pewter:hover {
+  background: linear-gradient(135deg, var(--c-pewter-l), #565960);
+  color: #fff;
 }
 
 .btn-secondary {
-  background: transparent;
-  color: var(--c-white);
-  border-color: rgba(255, 255, 255, 0.55);
+  border-color: var(--c-border);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.03)
+  );
+  color: var(--c-text);
 }
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--c-white);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--c-navy-700);
-  border-color: var(--c-line);
-}
-.btn-ghost:hover {
-  background: var(--c-surface);
+  background: rgba(255, 255, 255, 0.11);
+  color: var(--c-text);
 }

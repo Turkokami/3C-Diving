@@ -54,7 +54,7 @@ const { crumbs } = Astro.props as { crumbs: Crumb[] };
   .crumbs li + li::before {
     content: '/';
     margin-right: var(--s-2);
-    color: var(--c-line);
+    color: var(--c-border);
   }
 
   .crumbs a {
@@ -62,11 +62,11 @@ const { crumbs } = Astro.props as { crumbs: Crumb[] };
     text-decoration: none;
   }
   .crumbs a:hover {
-    color: var(--c-steel-500);
+    color: var(--c-pewter-l);
     text-decoration: underline;
   }
   .crumbs [aria-current='page'] {
-    color: var(--c-ink);
+    color: var(--c-text);
     font-weight: 600;
   }
 </style>

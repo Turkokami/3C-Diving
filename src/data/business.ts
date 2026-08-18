@@ -88,22 +88,33 @@ export const business = {
   sameAs: [] as string[],
 
   // ── Brand assets (M7 — required on every page) ──────────────────────────
-  logo: { src: '/brand/3rd-coast-logo.svg', alt: '3rd Coast Commercial Diving & Salvage' },
+  /**
+   * The real emblem, supplied by the owner: a pewter dive-helmet badge over an
+   * anchor inside a rope ring. It replaced a placeholder wordmark SVG. Alt
+   * describes the artwork rather than repeating the company name, because the
+   * schema `logo` node is consumed by machines that already have the name.
+   */
+  logo: {
+    src: '/brand/logo-512.png',
+    alt: '3rd Coast Commercial Diving and Salvage emblem: a vintage dive helmet over an anchor, ringed by rope',
+  },
   /**
    * M6 — alt describes what the image ACTUALLY shows, judged by sight.
-   * This is currently a generated branded type card (scripts/make-brand-assets.mjs),
-   * not a photograph, and the alt says so. The scaffold shipped with alt text
-   * describing "a diver entering the water at the Port of Brownsville" — a
-   * photograph that does not exist, which would have been a small fabrication
-   * baked into every page's og:image.
    *
-   * WHEN REAL FIELD PHOTOGRAPHY ARRIVES: replace the file and rewrite this alt to
-   * describe the photo. Field photos are the single biggest content asset gap in
-   * the ledger and the highest-value E-E-A-T signal available here.
+   * This is now built from a REAL PHOTOGRAPH of a 3rd Coast job (see
+   * scripts/make-social-card.py): a diver in surface-supplied gear entering the
+   * water beside a barge, under the brand charcoal wash with the pewter emblem.
+   *
+   * The scaffold originally shipped alt text describing "a diver entering the
+   * water at the Port of Brownsville" for an image that did not exist — a small
+   * fabrication baked into every page's og:image. It now describes a photograph
+   * that does exist. The location is deliberately NOT asserted: the causeway in
+   * the background reads as Queen Isabella, which would place it at Port Isabel,
+   * but that is an inference and questionnaire Q27 asks the owner to confirm it.
    */
   socialImage: {
     src: '/brand/3rd-coast-social.jpg',
-    alt: '3rd Coast Commercial Diving & Salvage brand card: commercial diving on the South Texas Gulf Coast',
+    alt: 'Commercial diver in surface-supplied gear entering the water beside a work barge, with 3rd Coast branding',
     width: 1200,
     height: 630,
   },

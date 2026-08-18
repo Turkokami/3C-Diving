@@ -521,19 +521,23 @@ const faqs = [
   }
 
   .spoke-list a {
-    background: var(--c-surface);
-    border: 1px solid var(--c-line);
-    color: var(--c-navy-700);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
   }
 
   .spoke-list a:hover {
-    border-color: var(--c-steel-500);
-    background: var(--c-steel-100);
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .spoke-list .pending {
-    border: 1px dashed var(--c-line);
-    color: var(--c-muted);
+    border: 1px dashed var(--c-border);
+    color: var(--c-muted-2);
   }
 
   .spoke-list strong {
@@ -553,10 +557,10 @@ const faqs = [
 
   .build-note {
     padding: var(--s-4);
-    background: var(--c-surface);
-    border-left: 4px solid var(--c-steel-300);
+    background: var(--c-card);
+    border-left: 4px solid var(--c-muted-2);
     border-radius: 0 var(--radius) var(--radius) 0;
     font-size: var(--t-sm);
-    color: var(--c-body);
+    color: var(--c-muted);
   }
 </style>
