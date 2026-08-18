@@ -1,29 +1,46 @@
 /**
- * tokens.css — the brand system.
+ * tokens.css — the brand system, plus a light-and-depth layer on top of it.
  *
- * THIS IS THE OWNER'S ACTUAL BRAND, not an invented one. Every value in the
- * "Brand, as built" block below is lifted directly from the CSS of the existing
- * 3cdiving.com page:
+ * ── THE BRAND, AS BUILT ─────────────────────────────────────────────────────
+ * Every value in the first block is lifted from the CSS of the owner's existing
+ * 3cdiving.com page. Charcoal, pewter, white, Georgia, generous radii:
  *
- *     --bg #0d0e10 · --bg-soft #14161a · --bg-card #1a1c21 · --bg-card-2 #23262c
- *     --text #ffffff · --muted #c7cbd1 · --muted-2 #9aa0a9
- *     --border rgba(255,255,255,.1) · --border-soft rgba(255,255,255,.06)
- *     --radius-xl 30px · --radius-2xl 34px · buttons 18px
- *     font-family: Georgia, "Times New Roman", serif
- *     primary button: linear-gradient(135deg, #70737c, #4a4d54)
+ *   --bg #0d0e10 · --bg-soft #14161a · --bg-card #1a1c21 · --bg-card-2 #23262c
+ *   --text #fff · --muted #c7cbd1 · --muted-2 #9aa0a9
+ *   --border rgba(255,255,255,.1) · radii 18 / 30 / 34px
+ *   Georgia, "Times New Roman", serif
+ *   primary button linear-gradient(135deg, #70737c, #4a4d54)
  *
- * The identity is dark charcoal, brushed pewter and a serif voice — which is the
- * right call, because the logo is a pewter dive-helmet emblem that only reads
- * properly on near-black. An earlier version of this file used a light navy and
- * amber palette that had nothing to do with the business.
+ * ── THE UPGRADE ─────────────────────────────────────────────────────────────
+ * The original page is flat: dark rectangles on a dark ground, everything at the
+ * same visual distance. The fix is not more colour — a monochrome charcoal system
+ * is the right call for a pewter dive-helmet emblem. The fix is LIGHT.
  *
- * ONE DELIBERATE ADDITION. The original site draws its primary button in the same
- * greys as its cards, so nothing on the page signals "this is the action". We keep
- * the pewter gradient as the brand's own button, and add a single restrained
- * copper — sampled from the helmet in the logo, so it is drawn from the brand
- * rather than imposed on it — reserved exclusively for the phone and emergency
- * paths. It is the only saturated colour in the system, which is exactly what
- * makes it work as a signal.
+ * Four devices do the whole job, and they are used consistently everywhere:
+ *
+ *   1. EDGE LIGHT. A 1px white top inset on every raised surface. This is the
+ *      single highest-leverage trick in dark UI: it reads as a lit edge catching
+ *      a light source above, and instantly separates a card from its background
+ *      in a way a border alone never does. `--edge`.
+ *
+ *   2. AMBIENT GLOW. Soft white bloom on hover and around focal elements, paired
+ *      with a real drop shadow. The shadow says "this sits above"; the glow says
+ *      "this is lit". Together they read as depth rather than as a sticker.
+ *
+ *   3. GRADIENT-CLIPPED DISPLAY TYPE. Large headings fade from pure white to
+ *      pewter top-to-bottom, which mimics the way the brushed-metal emblem
+ *      catches light and ties the type to the logo. Guarded in @supports with a
+ *      solid-white fallback.
+ *
+ *   4. GRAIN. A single inline SVG noise layer at very low opacity over the whole
+ *      page. Large flat dark areas band badly on 8-bit displays; a little grain
+ *      kills the banding and reads as film rather than as a gradient artefact.
+ *
+ * ── CONSTRAINTS THIS RESPECTS ───────────────────────────────────────────────
+ * Body text stays at --muted #c7cbd1 on #0d0e10, comfortably past AA. Glow is
+ * never load-bearing for meaning — it is always additive to a border or a colour
+ * change, so it degrades harmlessly. Every transition is disabled under
+ * prefers-reduced-motion. No web fonts, no JS, no external requests.
  */
 
 :root {
@@ -39,6 +56,7 @@
 
   --c-border: rgba(255, 255, 255, 0.1);
   --c-border-soft: rgba(255, 255, 255, 0.06);
+  --c-border-hi: rgba(255, 255, 255, 0.24);
 
   --c-pewter: #70737c;
   --c-pewter-d: #4a4d54;
@@ -49,29 +67,48 @@
   --c-copper-l: #c98c4d;
   --c-copper-d: #8f5a29;
 
-  /* ── Semantic ─────────────────────────────────────────────────────── */
-  --c-fg: var(--c-text);
-  --c-action: var(--c-copper);
-  --c-action-hover: var(--c-copper-l);
-  --c-link: #b9c6d1;
-  --c-link-hover: #ffffff;
+  /* ── Light & depth ────────────────────────────────────────────────── */
 
-  /* ── Type — Georgia, as the brand uses ────────────────────────────── */
+  /** The lit top edge. On every raised surface, without exception. */
+  --edge: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --edge-hi: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+  /** Glass fills — subtle, so the grain and watermark still read through. */
+  --fill-1: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  --fill-2: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  --fill-hover: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.045));
+
+  /** Elevation. Shadow for lift, white bloom for light. */
+  --elev-1: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --elev-2: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --elev-3: 0 26px 60px rgba(0, 0, 0, 0.55);
+  --bloom: 0 0 34px rgba(255, 255, 255, 0.07);
+  --bloom-strong: 0 0 46px rgba(255, 255, 255, 0.13);
+  --bloom-copper: 0 0 40px rgba(181, 118, 58, 0.3);
+
+  /** A hairline that fades out at both ends. Section separators. */
+  --rule: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+
+  /* ── Type ─────────────────────────────────────────────────────────── */
   --font-serif: Georgia, 'Times New Roman', Times, serif;
-  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
   --font-display: var(--font-serif);
   --font-body: var(--font-serif);
+  /** Labels, eyebrows, buttons. The sans/serif contrast is what reads as designed. */
+  --font-ui: var(--font-sans);
 
   --t-xs: 0.8125rem;
   --t-sm: 0.9375rem;
-  --t-base: clamp(1.02rem, 0.99rem + 0.16vw, 1.11rem);
-  --t-lg: clamp(1.14rem, 1.09rem + 0.24vw, 1.3rem);
-  --t-xl: clamp(1.35rem, 1.22rem + 0.55vw, 1.7rem);
-  --t-2xl: clamp(1.65rem, 1.42rem + 1vw, 2.3rem);
-  --t-3xl: clamp(2.05rem, 1.65rem + 1.75vw, 3.15rem);
+  --t-base: clamp(1.03rem, 1rem + 0.17vw, 1.13rem);
+  --t-lg: clamp(1.16rem, 1.1rem + 0.26vw, 1.34rem);
+  --t-xl: clamp(1.4rem, 1.24rem + 0.62vw, 1.8rem);
+  --t-2xl: clamp(1.75rem, 1.46rem + 1.2vw, 2.55rem);
+  --t-3xl: clamp(2.2rem, 1.7rem + 2.1vw, 3.6rem);
+  --t-4xl: clamp(2.6rem, 1.8rem + 3.4vw, 4.9rem);
 
-  --lh-tight: 1.16;
-  --lh-snug: 1.34;
+  --lh-tight: 1.08;
+  --lh-snug: 1.32;
   --lh-body: 1.72;
 
   /* ── Space / layout ───────────────────────────────────────────────── */
@@ -86,18 +123,15 @@
   --s-9: 6rem;
 
   --w-prose: 70ch;
-  --w-page: 1240px; /* --container, as built */
+  --w-page: 1240px;
 
-  /* Generous radii, as the brand uses */
   --radius: 14px;
   --radius-btn: 18px;
   --radius-lg: 30px;
   --radius-xl: 34px;
 
-  --shadow: 0 22px 48px rgba(0, 0, 0, 0.32);
-  --shadow-sm: 0 10px 26px rgba(0, 0, 0, 0.35);
-
   --phonebar-h: 58px;
+  --ease: cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
 /* ── Reset ─────────────────────────────────────────────────────────────── */
@@ -121,6 +155,7 @@ html {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
@@ -136,31 +171,60 @@ body {
   padding-bottom: var(--phonebar-h);
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
 }
 
 /**
- * The emblem watermark, exactly as the brand does it: the logo fixed behind the
- * page under a heavy charcoal wash. Kept subtle enough that body text stays
- * comfortably above the contrast floor, and dropped entirely on small screens
- * where it would cost a large image download for something nobody can make out.
+ * Layer 1 — the emblem watermark, as the brand does it, plus a cool top-light
+ * bloom so the page has a light source rather than being uniformly dark.
  */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: linear-gradient(rgba(8, 9, 11, 0.9), rgba(8, 9, 11, 0.94)),
+  background-image:
+    radial-gradient(
+      1100px 620px at 50% -12%,
+      rgba(190, 214, 232, 0.11),
+      transparent 68%
+    ),
+    linear-gradient(rgba(8, 9, 11, 0.9), rgba(8, 9, 11, 0.95)),
     url('/brand/logo-512.webp');
-  background-position: center, center;
-  background-repeat: no-repeat, no-repeat;
-  background-size: cover, min(78vw, 900px);
-  opacity: 0.55;
+  background-position: center, center, center 40%;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: cover, cover, min(62vw, 720px);
+  /**
+   * Deliberately faint. At full strength the emblem reads through 3,000 words of
+   * body copy and competes with it — the watermark is there to give the ground
+   * texture and brand presence, not to be looked at.
+   */
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/**
+ * Layer 2 — grain. Flat dark fields band on 8-bit panels; this removes it and
+ * gives the whole page a film quality. Inline SVG, so no request and no CSP issue.
+ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
   pointer-events: none;
   z-index: -1;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @media (max-width: 700px) {
   body::before {
-    background-image: linear-gradient(rgba(8, 9, 11, 0.9), rgba(8, 9, 11, 0.94));
+    background-image: radial-gradient(
+        900px 480px at 50% -14%,
+        rgba(190, 214, 232, 0.1),
+        transparent 68%
+      ),
+      linear-gradient(rgba(8, 9, 11, 0.9), rgba(8, 9, 11, 0.95));
   }
 }
 
@@ -169,6 +233,8 @@ body::before {
     padding-bottom: 0;
   }
 }
+
+/* ── Type ──────────────────────────────────────────────────────────────── */
 
 h1,
 h2,
@@ -184,20 +250,50 @@ h4 {
 
 h1 {
   font-size: var(--t-3xl);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.022em;
 }
 h2 {
   font-size: var(--t-2xl);
-  letter-spacing: -0.01em;
-  margin-top: var(--s-7);
+  letter-spacing: -0.015em;
+  margin-top: var(--s-8);
 }
 h3 {
   font-size: var(--t-xl);
+  letter-spacing: -0.01em;
   margin-top: var(--s-6);
 }
 h4 {
   font-size: var(--t-lg);
   margin-top: var(--s-5);
+}
+
+/**
+ * Brushed-metal display type: white at the top falling to pewter, echoing the way
+ * the emblem catches light. @supports-guarded, because a browser without
+ * background-clip:text would otherwise render this as invisible text.
+ */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .display {
+    background: linear-gradient(176deg, #ffffff 20%, #cdd3da 52%, #8b9199 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    /* A faint bloom behind the glyphs so they read as lit, not printed. */
+    filter: drop-shadow(0 0 26px rgba(255, 255, 255, 0.14));
+  }
+}
+
+/** Small uppercase sans label. The counterpoint to Georgia. */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 700;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--c-copper-l);
+  margin: 0 0 var(--s-4);
 }
 
 p,
@@ -213,15 +309,17 @@ li {
 
 strong {
   color: var(--c-text);
+  font-weight: 700;
 }
 
 a {
-  color: var(--c-link);
-  text-underline-offset: 0.16em;
-  text-decoration-color: rgba(255, 255, 255, 0.28);
+  color: #d7e0e8;
+  text-underline-offset: 0.18em;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  transition: color 0.18s var(--ease), text-decoration-color 0.18s var(--ease);
 }
 a:hover {
-  color: var(--c-link-hover);
+  color: #fff;
   text-decoration-color: currentColor;
 }
 
@@ -235,16 +333,29 @@ table {
   border-collapse: collapse;
   width: 100%;
   font-size: var(--t-sm);
+  font-family: var(--font-ui);
 }
 th,
 td {
   border: 1px solid var(--c-border);
-  padding: var(--s-3);
+  padding: var(--s-3) var(--s-4);
   text-align: left;
 }
 th {
   background: var(--c-card-2);
   color: var(--c-text);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+tbody tr:nth-child(odd) td {
+  background: rgba(255, 255, 255, 0.018);
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  margin: var(--s-7) 0;
 }
 
 .scroll-x {
@@ -253,8 +364,9 @@ th {
 }
 
 :focus-visible {
-  outline: 3px solid var(--c-copper-l);
-  outline-offset: 2px;
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* ── Layout primitives ─────────────────────────────────────────────────── */
@@ -268,12 +380,20 @@ th {
 
 @media (min-width: 768px) {
   .wrap {
-    padding-inline: var(--s-5);
+    padding-inline: var(--s-6);
   }
 }
 
 .section {
   padding-block: var(--s-8);
+}
+
+/** Fading hairline separator. */
+.rule {
+  height: 1px;
+  background: var(--rule);
+  border: 0;
+  margin: var(--s-8) 0;
 }
 
 .skip-link {
@@ -284,6 +404,8 @@ th {
   color: #fff;
   padding: var(--s-3) var(--s-4);
   z-index: 100;
+  font-family: var(--font-ui);
+  font-weight: 700;
   border-radius: 0 0 var(--radius) 0;
 }
 .skip-link:focus {
@@ -299,35 +421,44 @@ th {
   white-space: nowrap;
 }
 
-/** Frosted card, as the brand uses. */
+/* ── Surfaces ──────────────────────────────────────────────────────────── */
+
+/**
+ * The card. Note the two shadows doing different jobs: `--edge` lights the top
+ * edge from inside, `--elev-2` lifts the whole thing off the page.
+ */
 .card {
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
-  );
+  background: var(--fill-1);
   border: 1px solid var(--c-border);
   border-radius: var(--radius-lg);
   padding: var(--s-5);
+  box-shadow: var(--edge), var(--elev-1);
+  transition: border-color 0.22s var(--ease), background 0.22s var(--ease),
+    box-shadow 0.22s var(--ease), transform 0.22s var(--ease);
 }
 
-/** Rounded pill label, as the brand uses. */
+/** Interactive cards lift and catch more light. */
+.card-link:hover {
+  background: var(--fill-hover);
+  border-color: var(--c-border-hi);
+  box-shadow: var(--edge-hi), var(--elev-2), var(--bloom);
+  transform: translateY(-3px);
+}
+
 .pill {
   display: inline-flex;
   align-items: center;
+  gap: var(--s-2);
   width: fit-content;
-  padding: 9px 16px;
+  padding: 9px 17px;
   border: 1px solid var(--c-border);
   border-radius: 999px;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.03)
-  );
+  background: var(--fill-2);
+  box-shadow: var(--edge);
   color: #e6e8eb;
   font-size: var(--t-sm);
-  font-family: var(--font-sans);
-  letter-spacing: 0.01em;
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
 }
 
 /* ── Buttons ───────────────────────────────────────────────────────────── */
@@ -337,51 +468,62 @@ th {
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
-  padding: 14px 22px;
+  padding: 15px 26px;
   border-radius: var(--radius-btn);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   font-weight: 700;
   font-size: var(--t-sm);
+  letter-spacing: 0.015em;
   text-decoration: none;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  min-height: 48px;
+  min-height: 50px;
   color: var(--c-text);
+  transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    transform 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.btn:active {
+  transform: translateY(1px);
 }
 
 /** The action button. The only saturated colour in the system. */
 .btn-primary {
   background: linear-gradient(135deg, var(--c-copper-l), var(--c-copper-d));
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--edge), var(--elev-1);
   color: #fff;
 }
 .btn-primary:hover {
-  background: linear-gradient(135deg, #d59a5c, var(--c-copper));
+  background: linear-gradient(135deg, #dda164, var(--c-copper));
+  box-shadow: var(--edge-hi), var(--elev-2), var(--bloom-copper);
   color: #fff;
+  transform: translateY(-2px);
 }
 
 /** The brand's own pewter button, for secondary actions. */
 .btn-pewter {
   background: linear-gradient(135deg, var(--c-pewter), var(--c-pewter-d));
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--edge), var(--elev-1);
   color: #fff;
 }
 .btn-pewter:hover {
   background: linear-gradient(135deg, var(--c-pewter-l), #565960);
+  box-shadow: var(--edge-hi), var(--elev-2), var(--bloom);
   color: #fff;
+  transform: translateY(-2px);
 }
 
+/** Glass button. The white ring on hover is the "neon" moment. */
 .btn-secondary {
   border-color: var(--c-border);
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.03)
-  );
+  background: var(--fill-2);
+  box-shadow: var(--edge);
   color: var(--c-text);
 }
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.11);
-  color: var(--c-text);
+  background: var(--fill-hover);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: var(--edge-hi), var(--elev-2), var(--bloom-strong);
+  color: #fff;
+  transform: translateY(-2px);
 }

@@ -43,16 +43,33 @@ const { faqs, heading = 'Frequently asked questions' } = Astro.props as {
 
   .faq-list {
     max-width: var(--w-prose);
-    border-top: 1px solid var(--c-border);
+    display: grid;
+    gap: var(--s-3);
   }
 
   .faq-item {
-    border-bottom: 1px solid var(--c-border);
+    background: var(--fill-1);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    box-shadow: var(--edge), var(--elev-1);
+    padding: 0 var(--s-5);
+    transition: border-color 0.22s var(--ease), background 0.22s var(--ease),
+      box-shadow 0.22s var(--ease);
+  }
+
+  .faq-item:hover {
+    border-color: var(--c-border-hi);
+  }
+
+  .faq-item[open] {
+    background: var(--fill-2);
+    border-color: var(--c-border-hi);
+    box-shadow: var(--edge-hi), var(--elev-2), var(--bloom);
   }
 
   summary {
     cursor: pointer;
-    padding: var(--s-4) var(--s-5) var(--s-4) 0;
+    padding: var(--s-4) var(--s-6) var(--s-4) 0;
     font-family: var(--font-display);
     font-size: var(--t-lg);
     color: var(--c-text);
@@ -66,21 +83,28 @@ const { faqs, heading = 'Frequently asked questions' } = Astro.props as {
   }
 
   summary::after {
-    content: '+';
+    content: '';
     position: absolute;
-    right: 0;
-    top: var(--s-4);
-    font-size: 1.5rem;
-    line-height: 1;
-    color: var(--c-pewter-l);
+    right: 2px;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    margin-top: -6px;
+    border-right: 2px solid var(--c-copper-l);
+    border-bottom: 2px solid var(--c-copper-l);
+    transform: rotate(45deg);
+    transition: transform 0.25s var(--ease);
   }
 
   .faq-item[open] summary::after {
-    content: '−';
+    transform: rotate(-135deg);
+    margin-top: -2px;
   }
 
   .faq-answer {
-    padding-bottom: var(--s-4);
+    padding-bottom: var(--s-5);
+    border-top: 1px solid var(--c-border-soft);
+    padding-top: var(--s-4);
   }
   .faq-answer p {
     margin: 0;

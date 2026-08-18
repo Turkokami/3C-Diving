@@ -1,0 +1,163 @@
+---
+/**
+ * Hero — full-bleed photograph under a deep gradient, with display type over it.
+ *
+ * WHY A REAL PHOTO CARRIES THIS. The strongest thing this business has is that
+ * the work in the picture actually happened. A stock diver or an illustration
+ * would undercut the entire E-E-A-T argument the rest of the site makes, so the
+ * hero is one of the owner's own frames and nothing else.
+ *
+ * The gradient is doing real work, not decoration: it drops the photo's contrast
+ * exactly where the headline sits so the type clears AA without a flat scrim
+ * over the whole image. The picture stays legible; the words stay readable.
+ *
+ * `overlayFocus` shifts the darkest part of the gradient for photos whose
+ * subject sits on one side — the diver-entry frame has its action on the right,
+ * so the copy side gets the weight.
+ */
+import type { Photo } from '../data/media.ts';
+import { photoSrc } from '../data/media.ts';
+
+interface Props {
+  photo: Photo;
+  eyebrow?: string;
+  heading: string;
+  sub?: string;
+  /** Rendered as-is; pass buttons. */
+  align?: 'left' | 'center';
+}
+
+const { photo, eyebrow, heading, sub, align = 'left' } = Astro.props as Props;
+const { src, srcset } = photoSrc(photo);
+---
+
+<section class={`hero hero-${align}`}>
+  <div class="hero-media">
+    <img
+      src={src}
+      srcset={srcset}
+      sizes="100vw"
+      alt={photo.alt}
+      width={photo.width}
+      height={photo.height}
+      loading="eager"
+      decoding="sync"
+      fetchpriority="high"
+    />
+    <div class="hero-veil"></div>
+  </div>
+
+  <div class="hero-inner">
+    {eyebrow && <p class="eyebrow hero-eyebrow">{eyebrow}</p>}
+    <h1 class="display hero-heading">{heading}</h1>
+    {sub && <p class="hero-sub">{sub}</p>}
+    <div class="hero-actions"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-top: var(--s-5);
+    border: 1px solid var(--c-border);
+    box-shadow: var(--edge), var(--elev-3);
+    min-height: clamp(420px, 66vh, 660px);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 58% 52%;
+    /* Pulls the daylight photo toward the site's cool, graded look. */
+    filter: saturate(0.82) contrast(1.06) brightness(0.94);
+  }
+
+  /**
+   * Two stacked gradients: a vertical floor that guarantees contrast under the
+   * text, and a horizontal wash that keeps the left column dark while letting
+   * the right side of the photograph stay open.
+   */
+  .hero-veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to top,
+        rgba(8, 9, 11, 0.97) 0%,
+        rgba(8, 9, 11, 0.86) 26%,
+        rgba(8, 9, 11, 0.44) 58%,
+        rgba(8, 9, 11, 0.3) 100%
+      ),
+      linear-gradient(
+        to right,
+        rgba(8, 9, 11, 0.88) 0%,
+        rgba(8, 9, 11, 0.5) 46%,
+        rgba(8, 9, 11, 0.12) 100%
+      );
+  }
+
+  .hero-inner {
+    position: relative;
+    padding: var(--s-7) var(--s-5) var(--s-7);
+    max-width: 68ch;
+  }
+
+  @media (min-width: 768px) {
+    .hero-inner {
+      padding: var(--s-9) var(--s-8) var(--s-8);
+    }
+  }
+
+  .hero-eyebrow {
+    margin-bottom: var(--s-4);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  .hero-heading {
+    font-size: var(--t-4xl);
+    letter-spacing: -0.03em;
+    margin-bottom: var(--s-5);
+    max-width: 16ch;
+  }
+
+  .hero-sub {
+    font-size: var(--t-lg);
+    color: #dfe4e9;
+    max-width: 52ch;
+    margin-bottom: var(--s-6);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.7);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  .hero-center {
+    text-align: center;
+    align-items: center;
+  }
+  .hero-center .hero-inner {
+    margin-inline: auto;
+  }
+  .hero-center .hero-heading,
+  .hero-center .hero-sub {
+    margin-inline: auto;
+  }
+  .hero-center .hero-actions {
+    justify-content: center;
+  }
+</style>

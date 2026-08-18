@@ -92,9 +92,10 @@ const anything = problems.length || library.length || siblings.length || hubLive
 
 <style>
   .related {
-    margin-top: var(--s-7);
-    padding-top: var(--s-5);
-    border-top: 2px solid var(--c-border);
+    margin-top: var(--s-8);
+    padding-top: var(--s-6);
+    border-top: 1px solid transparent;
+    border-image: var(--rule) 1;
   }
 
   .related-group {
@@ -102,7 +103,12 @@ const anything = problems.length || library.length || siblings.length || hubLive
   }
 
   .related h2 {
-    font-size: var(--t-lg);
+    font-family: var(--font-ui);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--c-muted-2);
     margin-top: 0;
     margin-bottom: var(--s-3);
   }
@@ -128,19 +134,25 @@ const anything = problems.length || library.length || siblings.length || hubLive
 
   .related li a {
     display: block;
-    padding: var(--s-3);
-    background: var(--c-card);
-    border: 1px solid var(--c-border-soft);
+    padding: var(--s-4) var(--s-5);
+    background: var(--fill-1);
+    border: 1px solid var(--c-border);
     border-radius: var(--radius);
+    box-shadow: var(--edge), var(--elev-1);
     text-decoration: none;
     color: var(--c-muted);
+    font-family: var(--font-ui);
     font-weight: 600;
     font-size: var(--t-sm);
+    transition: background 0.22s var(--ease), border-color 0.22s var(--ease),
+      box-shadow 0.22s var(--ease), transform 0.22s var(--ease), color 0.22s var(--ease);
   }
 
   .related li a:hover {
-    background: var(--c-card-2);
-    border-color: var(--c-border);
+    background: var(--fill-hover);
+    border-color: var(--c-border-hi);
+    box-shadow: var(--edge-hi), var(--elev-2), var(--bloom);
+    transform: translateY(-3px);
     color: var(--c-text);
   }
 

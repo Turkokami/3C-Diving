@@ -1,0 +1,111 @@
+---
+/**
+ * Toc — sticky contents rail for long-form pages.
+ *
+ * WHY THIS EXISTS. Spokes run 3,000–5,000 words. At that length a reader arriving
+ * from a specific query ("does my vessel need a UWILD or an inspection?") needs to
+ * see the shape of the page and jump, or they bounce. On a 1440px screen the
+ * measure is capped at 70ch for readability, which leaves a wide empty column —
+ * so the rail costs no content width and fills space that was doing nothing.
+ *
+ * H2s only. Including H3s produces a list as long as the article, which defeats
+ * the purpose of an overview.
+ *
+ * Progressive enhancement, no JS: it is a plain anchor list. `scroll-margin-top`
+ * on the headings keeps the sticky header from covering the target after a jump —
+ * the small detail that makes in-page anchors feel correct rather than broken.
+ */
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+const { headings } = Astro.props as { headings: Heading[] };
+const items = headings.filter((h) => h.depth === 2);
+---
+
+{
+  items.length > 2 && (
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ol>
+        {items.map((h) => (
+          <li>
+            <a href={`#${h.slug}`}>{h.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<style>
+  .toc {
+    position: sticky;
+    top: calc(var(--s-8) + 40px);
+    padding: var(--s-5);
+    background: var(--fill-1);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--edge), var(--elev-1);
+    font-family: var(--font-ui);
+  }
+
+  .toc-title {
+    margin: 0 0 var(--s-4);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--c-muted-2);
+  }
+
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: toc;
+    max-width: none;
+  }
+
+  .toc li {
+    margin: 0;
+    counter-increment: toc;
+  }
+
+  .toc a {
+    display: flex;
+    gap: var(--s-3);
+    padding: var(--s-2) 0 var(--s-2) var(--s-3);
+    border-left: 2px solid var(--c-border);
+    font-size: 0.86rem;
+    line-height: 1.42;
+    color: var(--c-muted-2);
+    text-decoration: none;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+
+  .toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    color: var(--c-copper-d);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.74rem;
+    padding-top: 0.14em;
+    transition: color 0.2s var(--ease);
+  }
+
+  .toc a:hover {
+    color: var(--c-text);
+    border-left-color: var(--c-copper-l);
+  }
+
+  .toc a:hover::before {
+    color: var(--c-copper-l);
+  }
+
+  /* :target lights the entry the reader jumped to. */
+  .toc a:focus-visible {
+    color: var(--c-text);
+  }
+</style>

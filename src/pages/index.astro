@@ -18,7 +18,23 @@ import { services } from '../data/services.ts';
 import { territoryLocations } from '../lib/geo.ts';
 import { routeExists } from '../lib/routes.ts';
 import Figure from '../components/Figure.astro';
+import Hero from '../components/Hero.astro';
+import StatStrip from '../components/StatStrip.astro';
 import { photos } from '../data/media.ts';
+import { napPhone } from '../data/business.ts';
+
+const nap = napPhone();
+
+/**
+ * Every figure below is verified in docs/RESEARCH-NOTES.md. None is a claim about
+ * 3rd Coast's own scale — see the note in StatStrip.astro for why that matters.
+ */
+const portStats = [
+  { value: '52', unit: 'ft', label: 'Main channel depth since June 2026' },
+  { value: '85', unit: '%', label: 'Of US Navy & MARAD ship recycling' },
+  { value: '28', unit: 'M', label: 'Tons of cargo moved in FY2025' },
+  { value: '140', label: 'Boats in the local shrimp fleet' },
+];
 import { pendingFields } from '../data/business.ts';
 
 const locations = territoryLocations();
@@ -73,13 +89,21 @@ const pending = pendingFields();
     serviceType: 'Commercial Diving',
   }}
 >
-  <section slot="hero" class="hero">
-    <p class="hero-eyebrow">Port of Brownsville &middot; Port Isabel &middot; South Padre Island</p>
-    <h1>Commercial diving and marine salvage on the South Texas Gulf Coast</h1>
-    <p class="hero-sub">{business.tagline}</p>
-  </section>
+  <Hero
+    slot="hero"
+    photo={photos.diverEntry}
+    eyebrow="Port of Brownsville · Port Isabel · South Padre Island"
+    heading="Commercial diving on the South Texas Gulf Coast"
+    sub={business.tagline}
+  >
+    <a class="btn btn-primary" href={nap.href}>Call {nap.display}</a>
+    <a class="btn btn-secondary" href="/services/">See what we do</a>
+  </Hero>
 
-  <Figure photo={photos.diverEntry} priority={true} sizes="(min-width: 1240px) 1100px, 100vw" />
+  <StatStrip
+    stats={portStats}
+    note="Port and channel figures, verified August 2026. Sources are listed in our research notes."
+  />
 
   <h2>What we do</h2>
   <p>
@@ -135,42 +159,6 @@ const pending = pendingFields();
 </BaseLayout>
 
 <style>
-  .hero {
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.06),
-      rgba(255, 255, 255, 0.02)
-    );
-    border: 1px solid var(--c-border);
-    color: var(--c-text);
-    border-radius: var(--radius-xl);
-    padding: var(--s-8) var(--s-6);
-    margin-top: var(--s-5);
-  }
-
-  .hero-eyebrow {
-    margin: 0 0 var(--s-4);
-    color: var(--c-copper-l);
-    font-family: var(--font-sans);
-    font-size: var(--t-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .hero h1 {
-    color: var(--c-text);
-    margin-bottom: var(--s-4);
-    max-width: 20ch;
-  }
-
-  .hero-sub {
-    margin: 0;
-    color: var(--c-muted);
-    font-size: var(--t-lg);
-    max-width: 60ch;
-  }
-
   .service-grid {
     display: grid;
     gap: var(--s-3);
@@ -196,35 +184,58 @@ const pending = pendingFields();
   }
 
   .service-grid a {
-    display: block;
-    padding: var(--s-4);
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.05),
-      rgba(255, 255, 255, 0.02)
-    );
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-5);
+    background: var(--fill-1);
     border: 1px solid var(--c-border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius);
+    box-shadow: var(--edge), var(--elev-1);
     color: var(--c-text);
+    font-family: var(--font-ui);
     font-weight: 600;
+    font-size: var(--t-sm);
     text-decoration: none;
     height: 100%;
+    transition: background 0.22s var(--ease), border-color 0.22s var(--ease),
+      box-shadow 0.22s var(--ease), transform 0.22s var(--ease);
+  }
+
+  /* The arrow slides out on hover — a small reward, not a decoration. */
+  .service-grid a::after {
+    content: '→';
+    margin-left: auto;
+    color: var(--c-copper-l);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
   }
 
   .service-grid a:hover {
-    border-color: rgba(255, 255, 255, 0.28);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--fill-hover);
+    border-color: var(--c-border-hi);
+    box-shadow: var(--edge-hi), var(--elev-2), var(--bloom);
+    transform: translateY(-3px);
+  }
+
+  .service-grid a:hover::after {
+    opacity: 1;
+    transform: translateX(0);
   }
 
   /* A spoke whose page has not been built yet: named, but not yet a link. */
   .service-grid .pending {
-    display: block;
-    padding: var(--s-4);
+    display: flex;
+    align-items: center;
+    padding: var(--s-4) var(--s-5);
     background: transparent;
-    border: 1px dashed var(--c-border);
-    border-radius: var(--radius-lg);
+    border: 1px dashed var(--c-border-soft);
+    border-radius: var(--radius);
     color: var(--c-muted-2);
+    font-family: var(--font-ui);
     font-weight: 600;
+    font-size: var(--t-sm);
     height: 100%;
   }
 
@@ -239,10 +250,17 @@ const pending = pendingFields();
 
   .location-list li {
     margin: 0;
-    padding: var(--s-2) var(--s-3);
-    background: var(--c-card);
+    padding: var(--s-2) var(--s-4);
+    background: var(--fill-1);
     border: 1px solid var(--c-border);
-    border-radius: var(--radius);
+    border-radius: 999px;
+    box-shadow: var(--edge);
+    font-family: var(--font-ui);
     font-size: var(--t-sm);
+    color: var(--c-muted);
+  }
+
+  .location-list li:has(a) {
+    color: var(--c-text);
   }
 </style>

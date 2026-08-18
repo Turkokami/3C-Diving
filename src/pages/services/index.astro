@@ -515,28 +515,29 @@ const faqs = [
   .spoke-list .pending {
     display: block;
     height: 100%;
-    padding: var(--s-4);
+    padding: var(--s-5);
     border-radius: var(--radius);
     text-decoration: none;
   }
 
   .spoke-list a {
-    background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.05),
-      rgba(255, 255, 255, 0.02)
-    );
+    background: var(--fill-1);
     border: 1px solid var(--c-border);
+    box-shadow: var(--edge), var(--elev-1);
     color: var(--c-text);
+    transition: background 0.22s var(--ease), border-color 0.22s var(--ease),
+      box-shadow 0.22s var(--ease), transform 0.22s var(--ease);
   }
 
   .spoke-list a:hover {
-    border-color: rgba(255, 255, 255, 0.28);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--fill-hover);
+    border-color: var(--c-border-hi);
+    box-shadow: var(--edge-hi), var(--elev-2), var(--bloom);
+    transform: translateY(-3px);
   }
 
   .spoke-list .pending {
-    border: 1px dashed var(--c-border);
+    border: 1px dashed var(--c-border-soft);
     color: var(--c-muted-2);
   }
 
@@ -549,18 +550,22 @@ const faqs = [
 
   .rolled {
     display: block;
-    margin-top: var(--s-2);
+    margin-top: var(--s-3);
+    font-family: var(--font-ui);
     font-size: var(--t-xs);
-    color: var(--c-muted);
+    line-height: 1.55;
+    color: var(--c-muted-2);
     text-transform: lowercase;
   }
 
   .build-note {
-    padding: var(--s-4);
-    background: var(--c-card);
-    border-left: 4px solid var(--c-muted-2);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: var(--s-5);
+    background: var(--fill-1);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    box-shadow: var(--edge);
+    font-family: var(--font-ui);
     font-size: var(--t-sm);
-    color: var(--c-muted);
+    color: var(--c-muted-2);
   }
 </style>

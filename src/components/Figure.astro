@@ -60,10 +60,23 @@ const { src, srcset } = photoSrc(photo);
     border-radius: var(--radius-lg);
     border: 1px solid var(--c-border);
     background: var(--c-card);
+    box-shadow: var(--elev-3);
+    /* Grades the daylight photography toward the site's cooler look. */
+    filter: saturate(0.86) contrast(1.04);
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease),
+      filter 0.4s var(--ease);
+  }
+
+  .figure:hover img {
+    transform: translateY(-4px);
+    box-shadow: var(--elev-3), var(--bloom);
+    filter: saturate(0.95) contrast(1.05);
   }
 
   figcaption {
-    margin-top: var(--s-3);
+    margin-top: var(--s-4);
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--c-border-hi);
     font-size: var(--t-sm);
     line-height: var(--lh-snug);
     color: var(--c-muted-2);

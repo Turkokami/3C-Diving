@@ -27,32 +27,51 @@ const { answer, label = 'Quick answer' } = Astro.props as {
 
 <style>
   .answer-box {
+    position: relative;
+    background: var(--fill-2);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: var(--s-5) var(--s-6);
+    margin: 0 0 var(--s-7);
+    max-width: var(--w-prose);
+    box-shadow: var(--edge), var(--elev-2), var(--bloom);
+    overflow: hidden;
+  }
+
+  /* A copper filament down the leading edge, fading at both ends. */
+  .answer-box::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10%;
+    bottom: 10%;
+    width: 3px;
+    border-radius: 3px;
     background: linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.07),
-      rgba(255, 255, 255, 0.03)
+      transparent,
+      var(--c-copper-l),
+      var(--c-copper-d),
+      transparent
     );
-    border: 1px solid var(--c-border);
-    border-left: 4px solid var(--c-copper);
-    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-    padding: var(--s-4) var(--s-5);
-    margin: 0 0 var(--s-6);
-    max-width: var(--w-prose);
+    box-shadow: 0 0 18px rgba(201, 140, 77, 0.55);
   }
 
   .answer-label {
-    margin: 0 0 var(--s-2);
+    margin: 0 0 var(--s-3);
+    font-family: var(--font-ui);
     font-size: var(--t-xs);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.19em;
     color: var(--c-copper-l);
   }
 
   .answer-text {
     margin: 0;
-    font-size: var(--t-lg);
-    line-height: var(--lh-snug);
-    color: var(--c-text);
+    font-size: var(--t-xl);
+    line-height: 1.45;
+    color: #fff;
+    letter-spacing: -0.008em;
   }
 </style>

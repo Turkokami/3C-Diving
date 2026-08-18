@@ -102,11 +102,22 @@ const isCurrent = (href: string) =>
   /* The real emblem. alt="" because the adjacent brand text says the same thing —
      announcing it twice is noise for a screen reader. */
   .brand-mark {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     flex: none;
-    border: 1px solid var(--c-border);
+    border: 1px solid var(--c-border-hi);
+    box-shadow: 0 0 22px rgba(255, 255, 255, 0.1), var(--elev-1);
+    /* The emblem is dark pewter on black; lift it so it reads on the bar. */
+    filter: brightness(1.35) contrast(1.12);
+    transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease),
+      filter 0.3s var(--ease);
+  }
+
+  .brand:hover .brand-mark {
+    box-shadow: 0 0 34px rgba(255, 255, 255, 0.22), var(--elev-2);
+    transform: scale(1.04);
+    filter: brightness(1.55) contrast(1.15);
   }
 
   .brand-text {
@@ -117,9 +128,13 @@ const isCurrent = (href: string) =>
   .brand-text strong {
     font-family: var(--font-display);
     font-size: var(--t-lg);
+    letter-spacing: -0.015em;
   }
   .brand-text span {
-    font-size: var(--t-xs);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
     color: var(--c-muted-2);
   }
 
@@ -136,17 +151,40 @@ const isCurrent = (href: string) =>
     margin: 0;
   }
   .nav-list a {
+    position: relative;
     color: var(--c-muted);
     text-decoration: none;
+    font-family: var(--font-ui);
     font-size: var(--t-sm);
     font-weight: 600;
-    padding-block: var(--s-2);
+    letter-spacing: 0.01em;
+    padding-block: var(--s-3);
     display: inline-block;
+    transition: color 0.2s var(--ease);
+  }
+
+  /* Underline grows from the centre and glows. */
+  .nav-list a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--c-copper-l);
+    box-shadow: 0 0 12px rgba(201, 140, 77, 0.85);
+    transition: left 0.25s var(--ease), right 0.25s var(--ease);
+  }
+
+  .nav-list a:hover::after,
+  .nav-list a[aria-current='page']::after {
+    left: 0;
+    right: 0;
   }
   .nav-list a:hover,
   .nav-list a[aria-current='page'] {
     color: var(--c-text);
-    border-bottom: 2px solid var(--c-copper);
   }
 
   .header-phone {
@@ -158,15 +196,21 @@ const isCurrent = (href: string) =>
     line-height: 1.2;
   }
   .header-phone-label {
-    font-size: var(--t-xs);
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
     color: var(--c-copper-l);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.17em;
     font-weight: 700;
   }
   .header-phone-number {
     font-family: var(--font-display);
-    font-size: var(--t-lg);
+    font-size: var(--t-xl);
+    letter-spacing: -0.01em;
+    transition: text-shadow 0.25s var(--ease);
+  }
+  .header-phone:hover .header-phone-number {
+    text-shadow: 0 0 22px rgba(255, 255, 255, 0.45);
   }
 
   @media (min-width: 900px) {

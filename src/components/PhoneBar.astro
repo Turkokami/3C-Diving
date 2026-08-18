@@ -40,7 +40,8 @@ const showSpanish = nap.href !== business.phoneSpanish.href;
     z-index: 50;
     display: flex;
     height: var(--phonebar-h);
-    box-shadow: 0 -2px 12px rgba(6, 26, 43, 0.25);
+    box-shadow: 0 -14px 34px rgba(0, 0, 0, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
   }
 
   .phonebar a {
@@ -55,15 +56,19 @@ const showSpanish = nap.href !== business.phoneSpanish.href;
 
   .pb-call {
     flex: 1;
-    background: var(--c-copper);
-    color: var(--c-text);
+    background: linear-gradient(135deg, var(--c-copper-l), var(--c-copper-d));
+    color: #fff;
+    font-family: var(--font-ui);
+    letter-spacing: 0.02em;
   }
 
   .pb-es {
     flex: 0 0 34%;
-    background: var(--c-card);
+    background: rgba(20, 22, 26, 0.96);
+    backdrop-filter: blur(8px);
     color: var(--c-text);
-    border-left: 1px solid var(--c-pewter-d);
+    font-family: var(--font-ui);
+    border-left: 1px solid var(--c-border);
   }
 
   @media (min-width: 768px) {

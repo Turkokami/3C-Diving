@@ -14,7 +14,10 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RelatedLinks from '../../components/RelatedLinks.astro';
+import Toc from '../../components/Toc.astro';
+import Figure from '../../components/Figure.astro';
 import { services } from '../../data/services.ts';
+import { photosFor } from '../../data/media.ts';
 
 export async function getStaticPaths() {
   const entries = await getCollection('services');
@@ -25,10 +28,17 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 const data = entry.data;
 const taxonomy = services.find((s) => s.slug === data.serviceSlug);
+
+/**
+ * Only frames that genuinely illustrate THIS service (see media.ts). An empty
+ * result is a valid answer — a wrong photo is worse than no photo, so a spoke
+ * with no relevant frame simply ships without one.
+ */
+const [lead] = photosFor(data.serviceSlug);
 ---
 
 <BaseLayout
@@ -53,48 +63,163 @@ const taxonomy = services.find((s) => s.slug === data.serviceSlug);
     serviceType: data.serviceType ?? data.shortName,
   }}
 >
-  <article class="prose">
-    <Content />
-  </article>
+  <div class="spoke-layout">
+    <article class="prose">
+      {lead && <Figure photo={lead} />}
+      <Content />
+    </article>
+
+    <aside class="spoke-aside">
+      <Toc headings={headings} />
+    </aside>
+  </div>
 
   {taxonomy && <RelatedLinks service={taxonomy} />}
 </BaseLayout>
 
+<style>
+  /**
+   * The measure is capped at 70ch for readability, so on a wide screen the right
+   * column would otherwise be dead space. The contents rail fills it without
+   * taking a single character away from the text.
+   */
+  .spoke-layout {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 1060px) {
+    .spoke-layout {
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: var(--s-8);
+      align-items: start;
+    }
+  }
+
+  /* Below the breakpoint the rail is redundant — the reader just scrolls. */
+  .spoke-aside {
+    display: none;
+  }
+
+  @media (min-width: 1060px) {
+    .spoke-aside {
+      display: block;
+    }
+  }
+</style>
+
 <style is:global>
-  /* Markdown body styling. Scoped to .prose so it cannot leak into components. */
+  /**
+   * Markdown body styling. Scoped to .prose so it cannot leak into components.
+   *
+   * The long-form pages carry 3,000+ words, so the job here is rhythm and
+   * scanability: a lit pull-quote, framed tables, generous heading air, and a
+   * lead paragraph that gives the reader a run-up before the body sets in.
+   */
   .prose > h2:first-child {
     margin-top: 0;
   }
 
+  /* Clears the sticky header when an in-page anchor is followed. */
+  .prose h2,
+  .prose h3 {
+    scroll-margin-top: 96px;
+  }
+
+  /* The opening paragraph sets the voice — give it a larger size. */
+  .prose > p:first-of-type {
+    font-size: var(--t-lg);
+    color: #dbe0e6;
+    line-height: 1.62;
+  }
+
+  /* Section headings get a short glowing tick above them. */
+  .prose h2 {
+    position: relative;
+    padding-top: var(--s-5);
+  }
+
+  .prose h2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 46px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--c-copper-l);
+    box-shadow: 0 0 14px rgba(201, 140, 77, 0.7);
+  }
+
+  /* Pull-quote: the most emphatic thing on a long page, so it is lit. */
   .prose blockquote {
-    margin: var(--s-5) 0;
-    padding: var(--s-4) var(--s-5);
-    border-left: 5px solid var(--c-copper);
-    background: var(--c-card-2);
-    color: var(--c-text);
+    position: relative;
+    margin: var(--s-7) 0;
+    padding: var(--s-5) var(--s-6);
+    border: 1px solid rgba(201, 140, 77, 0.4);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(
+      180deg,
+      rgba(201, 140, 77, 0.13),
+      rgba(201, 140, 77, 0.04)
+    );
+    box-shadow: var(--edge-hi), var(--elev-2), var(--bloom-copper);
+    color: #fff;
+    font-size: var(--t-lg);
+    line-height: 1.55;
     max-width: var(--w-prose);
   }
+
   .prose blockquote p:last-child {
     margin-bottom: 0;
   }
 
   .prose table {
-    margin: var(--s-5) 0;
+    margin: var(--s-6) 0;
     display: block;
     overflow-x: auto;
     white-space: normal;
+    border-radius: var(--radius);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.15em;
+  }
+
+  .prose li::marker {
+    color: var(--c-copper-l);
   }
 
   .prose code {
-    background: var(--c-card);
-    padding: 0.1em 0.35em;
-    border-radius: 3px;
-    font-size: 0.9em;
+    background: var(--c-card-2);
+    border: 1px solid var(--c-border-soft);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   .prose hr {
     border: 0;
-    border-top: 1px solid var(--c-border);
-    margin: var(--s-6) 0;
+    height: 1px;
+    background: var(--rule);
+    margin: var(--s-8) 0;
+  }
+
+  /* Inline links in body copy stay visibly links without shouting. */
+  .prose p a,
+  .prose li a {
+    color: #e3e9ef;
+    text-decoration: underline;
+    text-decoration-color: rgba(201, 140, 77, 0.65);
+    text-decoration-thickness: 1px;
+  }
+
+  .prose p a:hover,
+  .prose li a:hover {
+    color: #fff;
+    text-decoration-color: var(--c-copper-l);
   }
 </style>
