@@ -108,3 +108,44 @@ Sources: [ABS UWILD Guide (PDF)](https://ww2.eagle.org/content/dam/eagle/rules-a
 - [ ] AWS D3.6M underwater weld class definitions (A / B / C / O)
 - [ ] ADCI consensus standards — current edition and what membership requires
 - [ ] VGP / biofouling in-water cleaning rules for Texas waters
+
+---
+
+## AWS D3.6M — Underwater Welding Code
+
+Current edition: **D3.6M:2017**.
+
+**Weld classes.** The code defines classes by what the weld has to survive, not by technique:
+
+| Class | Intent |
+|---|---|
+| **A** | Suitable for applications and design stresses **comparable to their conventional above-water counterparts** |
+| **B** | **Less critical** applications, where limited discontinuities can be tolerated |
+| **O** | Must conform to **another designated code or standard**, plus additional requirements for the underwater environment |
+
+Each class sets both weldment properties to be established at qualification and weld soundness requirements verified during construction.
+
+**Five methods** are covered: dry welding at one atmosphere; dry welding in a habitat; dry chamber welding; dry-spot welding; and **wet welding at ambient pressure**, where the welder/diver is in the water with no mechanical barrier between the water and the arc.
+
+Sources: [AWS D3.6M:2017 preview (PDF)](https://pubs.aws.org/Download_PDFS/D3.6M-2017PV.pdf) · [ANSI Blog overview](https://blog.ansi.org/ansi/underwater-welding-code-aws-d3-6m-2017/)
+
+> **The commercial point.** "We do underwater welding" is meaningless without a class. The honest question an owner should ask is *which class, qualified to which procedure, and is that acceptable to whoever signs off the repair.* Almost nobody in this market writes that down.
+
+---
+
+## VGP / VIDA — in-water cleaning rules
+
+**Underwater Ship Husbandry Discharges** covers material discharged during inspection, maintenance, cleaning and repair of hulls or hull appendages performed **while the vessel is waterborne** — i.e. exactly what a dive contractor does.
+
+| Rule | Detail |
+|---|---|
+| Macrofouling | In-water cleaning discharge **prohibited without capture** |
+| Microfouling | Discharge requirements set for hulls and niche areas |
+| Major cleaning | Should take place in drydock or at a land-based facility where waste is managed |
+| TBT coatings | Prohibited; a hull still carrying TBT needs a certified effective sealing coat |
+
+**VIDA** (Vessel Incidental Discharge Act) is replacing the VGP regime; EPA has been finalising the standards that supersede it.
+
+Sources: [EPA VGP (USCG-hosted PDF)](https://www.dco.uscg.mil/Portals/9/DCO%20Documents/5p/CG-5PC/CG-CVC/CVC1/general/vgp/vgp.pdf) · [EPA finalises vessel discharge standards](https://www.fredlaw.com/alert-epa-finalizes-new-vessel-discharge-standards-to-replace-vessel-general-permit) · [VGP/VIDA compliance guide](https://www.marinepublic.com/blogs/marine-law/126865-vgp-vida-compliance-full-guide-for-commercial-vessel)
+
+> **The commercial point.** Grooming a lightly fouled hull often enough that it never reaches macrofouling is both cheaper and the position that stays clear of the capture requirement. That argument sells a maintenance interval rather than a one-off clean, and it is honest.
