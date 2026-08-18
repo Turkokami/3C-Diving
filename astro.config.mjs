@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 import { SITE_URL } from './src/data/business.ts';
+import { rehypeLiveLinks } from './plugins/rehype-live-links.mjs';
 
 /**
  * Keystone Part 7A — static output, near-zero JS.
@@ -33,6 +34,15 @@ export default defineConfig({
       lastmod: new Date(),
     }),
   ],
+  markdown: {
+    /**
+     * Lets writers cross-link the full taxonomy from day one. A link whose page
+     * has not been built yet renders as plain text and switches itself on when
+     * that page lands — so the M3 wiring contract can be written into the prose
+     * up front without ever shipping a dead link.
+     */
+    rehypePlugins: [rehypeLiveLinks],
+  },
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'hover',

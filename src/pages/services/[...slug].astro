@@ -1,0 +1,100 @@
+---
+/**
+ * Service spoke route (T2).
+ *
+ * Renders every entry in the `services` content collection. A spoke exists on the
+ * site exactly when its markdown file exists — there is no separate registry to
+ * keep in sync, so a written page cannot be left unrouted and a routed page
+ * cannot be left unwritten.
+ *
+ * `services.ts` remains authoritative for the taxonomy (slug, rolled-up
+ * capabilities, problem children, library wiring). The markdown carries the prose.
+ * `scripts/check-content.mjs` asserts the two agree.
+ */
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import { services } from '../../data/services.ts';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('services');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const data = entry.data;
+const taxonomy = services.find((s) => s.slug === data.serviceSlug);
+---
+
+<BaseLayout
+  title={data.title}
+  h1={data.h1}
+  answer={data.answer}
+  description={data.description}
+  faqs={data.faqs}
+  market={data.market}
+  ctaVariant={data.ctaVariant}
+  datePublished={data.datePublished}
+  dateModified={data.dateModified}
+  crumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Services', href: '/services/' },
+    { name: data.shortName, href: `/services/${data.serviceSlug}/` },
+  ]}
+  entity={{
+    kind: 'service',
+    name: data.h1,
+    description: data.answer,
+    serviceType: data.serviceType ?? data.shortName,
+  }}
+>
+  <article class="prose">
+    <Content />
+  </article>
+
+  {taxonomy && <RelatedLinks service={taxonomy} />}
+</BaseLayout>
+
+<style is:global>
+  /* Markdown body styling. Scoped to .prose so it cannot leak into components. */
+  .prose > h2:first-child {
+    margin-top: 0;
+  }
+
+  .prose blockquote {
+    margin: var(--s-5) 0;
+    padding: var(--s-4) var(--s-5);
+    border-left: 5px solid var(--c-amber-500);
+    background: var(--c-amber-100);
+    color: var(--c-ink);
+    max-width: var(--w-prose);
+  }
+  .prose blockquote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .prose table {
+    margin: var(--s-5) 0;
+    display: block;
+    overflow-x: auto;
+    white-space: normal;
+  }
+
+  .prose code {
+    background: var(--c-surface);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--c-line);
+    margin: var(--s-6) 0;
+  }
+</style>

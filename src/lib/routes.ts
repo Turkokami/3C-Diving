@@ -12,16 +12,34 @@
  * themselves via `import.meta.glob`, so a link becomes live the moment its page
  * file is created and never before. There is nothing to remember.
  *
- * Dynamic routes are handled by converting `[param]` segments to a regex, so
- * `/services/hull-cleaning/` resolves as soon as `src/pages/services/[service].astro`
- * exists. Whether that particular slug is actually emitted is a separate question
- * owned by `getStaticPaths` and the capacity gate — and the dead-link crawler in
- * `scripts/check-links.mjs` is the backstop that catches any disagreement, because
- * it reads `dist/` rather than the source tree.
+ * DYNAMIC ROUTES RESOLVE AGAINST CONTENT, NOT AGAINST THE ROUTE PATTERN.
+ *
+ * This is the subtle part. `src/pages/services/[...slug].astro` is a single route
+ * file that matches every path under `/services/`, so testing a path against the
+ * PATTERN would report that all fourteen spokes exist the moment the first one is
+ * written — and the site would ship thirteen dead links from the home page.
+ *
+ * So a dynamic route's real inventory is read from the source of truth that
+ * `getStaticPaths` itself uses: the content collection files on disk. A spoke
+ * becomes linkable exactly when its markdown lands, and not one build earlier.
+ *
+ * `scripts/check-links.mjs` remains the backstop, because it reads `dist/` rather
+ * than the source tree and so catches any disagreement between the two.
  */
 
 // Keys only — the modules are never evaluated, so this costs nothing at runtime.
 const pageFiles = import.meta.glob('/src/pages/**/*.astro');
+
+/**
+ * Content-collection inventories. Each entry maps a collection's files to the URL
+ * prefix its route file serves them under. Add a line here when a new collection
+ * gets a route — locations, compliance, marine-library and the rest.
+ */
+const contentRoutes = new Set<string>(
+  Object.keys(import.meta.glob('/src/content/services/*.md')).map(
+    (f) => `/services/${f.split('/').pop().replace(/\.md$/, '')}/`
+  )
+);
 
 /** '/src/pages/services/[service].astro' → '/services/[service]/' */
 function fileToRoute(file: string): string {
@@ -36,22 +54,16 @@ const allRoutes = Object.keys(pageFiles).map(fileToRoute);
 /** Routes with no [param] — exact matches. */
 const staticRoutes = new Set(allRoutes.filter((r) => !r.includes('[')));
 
-/** Routes with [param] segments, compiled to matchers. */
-const dynamicMatchers = allRoutes
-  .filter((r) => r.includes('['))
-  .map((r) => {
-    const pattern = r
-      .replace(/[.*+?^${}()|\\]/g, '\\$&')
-      .replace(/\[\.\.\.[^\]]+\]/g, '.+') // rest params
-      .replace(/\[[^\]]+\]/g, '[^/]+');
-    return new RegExp(`^${pattern}$`);
-  });
-
-/** Does a page exist that can serve this path? */
+/**
+ * Does a page exist that can serve this path?
+ *
+ * Deliberately does NOT pattern-match dynamic route files — see the header note.
+ * A path under a dynamic route counts as existing only when the content file
+ * backing it is present.
+ */
 export function routeExists(href: string): boolean {
   const path = href.split('#')[0].split('?')[0];
-  if (staticRoutes.has(path)) return true;
-  return dynamicMatchers.some((re) => re.test(path));
+  return staticRoutes.has(path) || contentRoutes.has(path);
 }
 
 /** Filter a nav list down to what is currently built. */
@@ -60,4 +72,4 @@ export function liveLinks<T extends { href: string }>(items: T[]): T[] {
 }
 
 /** For debugging / the build report. */
-export const builtRoutes = () => [...staticRoutes].sort();
+export const builtRoutes = () => [...staticRoutes, ...contentRoutes].sort();

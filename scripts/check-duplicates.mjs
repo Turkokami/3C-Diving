@@ -14,8 +14,7 @@
  *
  * Boilerplate is excluded by counting only <main>, minus nav/header/footer.
  */
-import { loadPages, Report, isIndexable, contentWords } from './lib/harness.mjs';
-import { parse } from 'node-html-parser';
+import { loadPages, Report, isIndexable, mainContent } from './lib/harness.mjs';
 
 const SENTENCE_MIN_WORDS = 10;
 const PAGE_THRESHOLD = 3;
@@ -26,16 +25,9 @@ const pages = (await loadPages()).filter((p) => isIndexable(p.dom));
 const sentenceMap = new Map(); // sentence → Set(url)
 const h2Map = new Map(); // heading → Set(url)
 
-function mainText(dom) {
-  const clone = parse(dom.toString());
-  for (const sel of ['script', 'style', 'nav', 'header', 'footer', '.phonebar', '.crumbs']) {
-    for (const el of clone.querySelectorAll(sel)) el.remove();
-  }
-  return clone.querySelector('main') ?? clone;
-}
-
 for (const { dom, url } of pages) {
-  const main = mainText(dom);
+  // Shared with the word-count auditor — see CHROME_SELECTORS in lib/harness.mjs.
+  const main = mainContent(dom);
 
   const text = main.structuredText.replace(/\s+/g, ' ').trim();
   for (const raw of text.split(/(?<=[.!?])\s+/)) {

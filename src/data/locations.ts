@@ -56,8 +56,78 @@ const blank = () => ({
 
 export const locations: Location[] = [
   // ── CORE · Deep South Texas (Phase 3a) — confirmed by the live site's own claims ──
-  { slug: 'port-of-brownsville', name: 'Port of Brownsville', port: 'Port of Brownsville', tier: 'core', cluster: 'full', order: 1, ...blank() },
-  { slug: 'brownsville', name: 'Brownsville', port: 'Port of Brownsville', tier: 'core', cluster: 'full', order: 2, ...blank() },
+  /**
+   * RESEARCHED. Every value below is sourced in docs/RESEARCH-NOTES.md.
+   *
+   * NOTE THE CHANNEL DEPTH. The Brazos Island Harbor deepening completed
+   * 25 June 2026: the main channel went 42 ft → 52 ft and the entrance and
+   * jetty channels 44 ft → 54 ft. The buildout plan's own sample copy cites
+   * "42-foot project depth" — that number is now stale, and repeating it would
+   * mean being wrong about the single most basic fact of the home port.
+   */
+  {
+    slug: 'port-of-brownsville',
+    name: 'Port of Brownsville',
+    port: 'Port of Brownsville',
+    tier: 'core',
+    cluster: 'full',
+    order: 1,
+    researched: true,
+    distanceMi: 0,
+    direction: 'at',
+    geo: { latitude: 25.9509, longitude: -97.3987 },
+    waterConditions: [
+      '52 ft main channel project depth following the June 2026 Brazos Island Harbor deepening',
+      '54 ft entrance and jetty channels at Brazos Santiago Pass',
+      'third deepest port in Texas',
+      'working commercial water — visibility varies with wind, tide and channel traffic',
+    ],
+    vesselMix: [
+      'bulk carriers',
+      'tankers',
+      'LNG construction traffic',
+      'tug and barge',
+      'layberth and tow-in tonnage awaiting recycling',
+      'offshore support vessels',
+    ],
+    landmarks: [
+      'Brazos Santiago Pass',
+      'the Brownsville Ship Channel',
+      'SteelCoast ship recycling complex — roughly 4,000 ft of water frontage on the main channel',
+      'Rio Grande LNG',
+      'Texas LNG',
+    ],
+    industry: [
+      'ship recycling — over 85% of US Navy and MARAD vessel recycling',
+      'LNG export construction',
+      'steel and scrap processing',
+      'cross-border trade — the only deep-water port on the US–Mexico border',
+      '28 million tons of cargo moved in FY2025',
+    ],
+  },
+  {
+    slug: 'brownsville',
+    name: 'Brownsville',
+    port: 'Port of Brownsville',
+    tier: 'core',
+    cluster: 'full',
+    order: 2,
+    researched: true,
+    distanceMi: 5,
+    direction: 'west of',
+    geo: { latitude: 25.9017, longitude: -97.4975 },
+    waterConditions: [
+      'Brownsville Ship Channel runs east to the Laguna Madre and Brazos Santiago Pass',
+      'silt-laden channel water — blackwater technique is routine, not exceptional',
+    ],
+    vesselMix: ['shrimp trawlers', 'tug and barge', 'workboats', 'commercial fishing fleet'],
+    landmarks: ['the Brownsville Ship Channel turning basin', 'the shrimp basin'],
+    industry: [
+      'Brownsville–Port Isabel shrimp fleet — roughly 140 boats, second in the nation by value and volume of wild-caught shrimp',
+      'the largest and most valuable commercial fishery in Texas',
+      'marine services and fabrication',
+    ],
+  },
   { slug: 'port-isabel', name: 'Port Isabel', port: 'Port Isabel', tier: 'core', cluster: 'triple', order: 3, ...blank() },
   { slug: 'south-padre-island', name: 'South Padre Island', port: null, tier: 'core', cluster: 'triple', order: 4, ...blank() },
   { slug: 'brazos-santiago-pass', name: 'Brazos Santiago Pass', port: 'Brazos Santiago', tier: 'core', cluster: 'single', order: 5, ...blank() },

@@ -1,0 +1,562 @@
+---
+/**
+ * Services hub (T1-var).
+ *
+ * PART 3.1 CARDINAL RULE: the hub is built before the spokes, with real content,
+ * never a stub. On a prior build the /services/ hub accumulated 74 inbound links
+ * while remaining a 558-word stub — the most link equity on the site pointing at
+ * its thinnest page. This page is written to the full floor before any spoke
+ * exists, and `scripts/check-links.mjs` reports its inbound count so it is
+ * audited by link equity rather than by how it looks.
+ *
+ * The service list renders from `services.ts` and is filtered through
+ * routeExists(), so a spoke becomes a link the moment its markdown lands.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { services } from '../../data/services.ts';
+import { routeExists } from '../../lib/routes.ts';
+import { business } from '../../data/business.ts';
+
+const groups = [
+  {
+    name: 'Vessel hull and running gear',
+    intro:
+      'The recurring in-water work that keeps a vessel trading between dockings — condition, fouling, running gear and corrosion protection.',
+    slugs: ['underwater-inspection', 'hull-cleaning', 'propeller-services', 'anode-replacement'],
+  },
+  {
+    name: 'Survey and class support',
+    intro:
+      'Work whose audience is a class surveyor, a port state inspector or an insurer, where the documentation standard is set by somebody other than you.',
+    slugs: ['uwild-in-water-survey', 'underwater-survey', 'sea-chest-services'],
+  },
+  {
+    name: 'Repair and welding support',
+    intro:
+      'In-water intervention where the alternative is a drydock booking, plus the honest limits of what wet work can and cannot achieve.',
+    slugs: ['underwater-welding'],
+  },
+  {
+    name: 'Infrastructure and construction',
+    intro:
+      'Fixed marine structures and the projects that build them — berths, pilings, intakes and dive support for marine contractors.',
+    slugs: ['pile-dock-pier-inspection', 'port-diving', 'marine-construction-support'],
+  },
+  {
+    name: 'Salvage, recovery and emergency',
+    intro:
+      'Low-frequency, high-consequence work. Usually the call comes when something has already gone wrong.',
+    slugs: ['marine-salvage', 'search-and-recovery', 'emergency-underwater-response'],
+  },
+];
+
+const bySlug = new Map(services.map((s) => [s.slug, s]));
+const isLive = (slug: string) => routeExists(`/services/${slug}/`);
+const liveCount = services.filter((s) => isLive(s.slug)).length;
+
+// Sentence one is written to stand alone at 110–165 chars — it becomes the meta
+// description. See CONTENT_BRIEF.md §4.
+const answer =
+  'We provide commercial diving services across the South Texas Gulf Coast, from hull and running-gear maintenance to survey support and salvage. Everything here is delivered in the water, alongside your berth, so the vessel keeps trading or the berth keeps working while we do it.';
+
+const faqs = [
+  {
+    question: 'Which commercial diving services does 3rd Coast provide?',
+    answer:
+      'Fourteen core services: underwater inspection, underwater welding and cutting support, hull cleaning, propeller clearing and polishing, anode replacement and cathodic protection, UWILD and in-water survey support, marine salvage and recovery, sea chest inspection and repair support, port and terminal diving, pile, dock and pier inspection, marine construction dive support, emergency underwater response, search and recovery, and seabed and underwater condition survey.',
+  },
+  {
+    question: 'Do you work on vessels, fixed structures, or both?',
+    answer:
+      'Both. Vessel work covers the hull, running gear, sea chests and appendages. Fixed-structure work covers berths, pilings, fenders, sheet pile, intakes and outfalls, and the seabed around them. The dive techniques overlap heavily; the documentation and the client are usually different.',
+  },
+  {
+    question: 'Can this work be done without taking the vessel out of service?',
+    answer:
+      'That is the point of most of it. Hull cleaning, propeller polishing, anode replacement, inspection and survey support are all performed alongside, and are chosen specifically to avoid a drydock booking. Some defects genuinely require a drydock, and we will tell you when that is the case rather than selling you an in-water job that will not hold.',
+  },
+  {
+    question: 'How do I know which service I need?',
+    answer:
+      'Describe the problem rather than picking a service. "There is a vibration that started last voyage" or "our surveyor wants to know if we can defer the docking" leads to a more useful scope than a service name would. Call and tell us the vessel, the berth and what you are seeing.',
+  },
+  {
+    question: 'Do you cover emergency callouts?',
+    answer:
+      'Yes. Time-sensitive mobilisation is a core service — a fouled propeller, a blocked sea chest, a vessel taking on water at the berth, a dropped object in the channel. Call the number on this page and describe what is happening.',
+  },
+];
+---
+
+<BaseLayout
+  title="Commercial Diving Services Brownsville TX | 3rd Coast"
+  h1="Commercial diving services on the South Texas Gulf Coast"
+  answer={answer}
+  faqs={faqs}
+  market={business.primaryMarket}
+  crumbs={[
+    { name: 'Home', href: '/' },
+    { name: 'Services', href: '/services/' },
+  ]}
+  entity={{
+    kind: 'service',
+    name: 'Commercial Diving Services',
+    description:
+      'Underwater inspection, hull and running gear maintenance, welding support, survey support, marine construction support and salvage on the South Texas Gulf Coast.',
+    serviceType: 'Commercial Diving',
+  }}
+>
+  <p>
+    Everything on this page happens in the water. That is the common thread and it is
+    also the commercial argument: a vessel alongside is a vessel still earning, and a
+    berth that stays open is a berth still working. In-water work exists to keep both
+    of those true for as long as it honestly can — and to tell you clearly when it
+    cannot.
+  </p>
+
+  <p>
+    The services below are grouped by the kind of problem they solve rather than by
+    dive technique, because that is how the call usually arrives. Nobody rings asking
+    for surface-supplied air. They ring because a surveyor wants something confirmed,
+    a propeller is wrapped, an anode survey is overdue, or something is on the bottom
+    that should not be.
+  </p>
+
+  {
+    groups.map((g) => (
+      <section class="group">
+        <h2>{g.name}</h2>
+        <p>{g.intro}</p>
+        <ul class="spoke-list">
+          {g.slugs.map((slug) => {
+            const s = bySlug.get(slug);
+            if (!s) return null;
+            return (
+              <li>
+                {isLive(slug) ? (
+                  <a href={`/services/${slug}/`}>
+                    <strong>{s.name}</strong>
+                    {s.rolledUp.length > 0 && <span class="rolled">{s.rolledUp.join(' · ')}</span>}
+                  </a>
+                ) : (
+                  <span class="pending">
+                    <strong>{s.name}</strong>
+                    {s.rolledUp.length > 0 && <span class="rolled">{s.rolledUp.join(' · ')}</span>}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))
+  }
+
+  <h2>What the Port of Brownsville changes about this work</h2>
+
+  <p>
+    Local knowledge is not a slogan here, it is a scheduling input. Three things about
+    this stretch of coast change how in-water work is planned.
+  </p>
+
+  <p>
+    <strong>The channel is deeper than most published information says.</strong> The
+    Brazos Island Harbor Channel Improvement Project completed on 25 June 2026, taking
+    the main channel from 42 ft to 52 ft and the entrance and jetty channels at Brazos
+    Santiago Pass from 44 ft to 54 ft. Brownsville is now the third deepest port in
+    Texas. Deeper-draught vessels mean more underwater body to cover, and more of it
+    further down.
+  </p>
+
+  <p>
+    <strong>Visibility is the governing constraint on survey work.</strong> The channel
+    carries silt, and a great deal of useful inspection and repair is done close in, by
+    touch, with the camera near the work. What silt genuinely constrains is class
+    survey: ABS expects water clear enough to show the full height of the propeller and
+    rudder in a single frame. That is why in-water surveys here are scheduled around
+    tide, wind and rainfall rather than squeezed into a convenient afternoon.
+  </p>
+
+  <p>
+    <strong>The vessel mix is unusual.</strong> The port moved 28 million tons of cargo
+    in FY2025, up 101% in five years. It captures more than 85% of US Navy and MARAD
+    ship recycling — SteelCoast alone works an 80-acre complex with around 4,000 ft of
+    frontage on the main channel — while Rio Grande LNG builds toward 48 MTPA and Texas
+    LNG progresses a second export terminal. Alongside that sits a roughly 140-boat
+    shrimp fleet, second in the nation by value and volume of wild-caught shrimp. Those
+    three fleets generate genuinely different work: layberth and pre-tow condition
+    surveys, marine construction support, and fast-turnaround running-gear recovery.
+  </p>
+
+  <h2>What in-water work replaces, and what it does not</h2>
+
+  <p>
+    The honest boundary matters more than the sales pitch, so it is worth setting out
+    plainly. A large share of what used to require a drydock booking can now be done
+    alongside: hull cleaning and grooming, propeller polishing and rope clearance,
+    anode renewal, sea chest and strainer clearing, condition inspection, and a great
+    deal of survey work. For those, in-water is not a compromise. It is faster, it does
+    not consume a docking slot, and it does not take the vessel off hire.
+  </p>
+
+  <p>
+    Some work sits in a genuine middle ground. Wet welding is a real and long-standing
+    technique, but the weld classes achievable in the water are not the same as those
+    achievable in air, and the correct answer depends on what the repair has to carry
+    and for how long. A temporary repair that gets a vessel to its scheduled docking is
+    a legitimate and common outcome. A permanent structural repair sold as equivalent
+    to a dry repair, when it is not, is how an owner ends up with a problem twice.
+  </p>
+
+  <p>
+    And some work simply cannot be done in the water. Anything requiring the hull to be
+    dry, the tail shaft to be drawn, extensive plate renewal, or full-surface coating
+    application belongs in a dock. When we think that is where you are, we will say so
+    at the enquiry stage. Turning down a job we could technically bill for is cheaper
+    for everyone than delivering one that does not hold.
+  </p>
+
+  <h2>How commercial diving is regulated, and what to ask any contractor</h2>
+
+  <p>
+    Commercial diving in the United States is regulated work. The governing standard
+    for most of what happens on this coast is <strong>29 CFR 1910 Subpart T</strong>,
+    and its requirements are not a matter of company preference — they apply to every
+    contractor equally, including us.
+  </p>
+
+  <p>
+    Under Subpart T, surface-supplied air diving requires a minimum three-person dive
+    team: a designated person-in-charge, the diver, and a tender, with the diver
+    continuously tended while in the water. Surface-supplied air diving is limited to
+    190 fsw, with dives of 30 minutes bottom time or less permitted to 220 fsw. A
+    decompression chamber must be ready at the dive location for any dive outside the
+    no-decompression limits or deeper than 100 fsw. A bell is required where in-water
+    decompression exceeds 120 minutes, with narrow exceptions.
+  </p>
+
+  <p>
+    Those numbers are useful to an owner for one specific reason: they let you sanity
+    check a quote. A price that only makes sense with two people on site is a price
+    that does not include a tender, and a job that cannot be run to the standard is a
+    job that should not be run at all.
+  </p>
+
+  <p>Before any contractor enters the water on your vessel or your berth, ask for:</p>
+
+  <ul>
+    <li>The written dive plan for the specific job, not a generic template</li>
+    <li>The qualifications and experience of the supervisor who will run the dive</li>
+    <li>
+      Confirmation of how propulsion, thrusters, sea suctions and overboard discharges
+      will be isolated, locked out and tagged — and who is signing for it
+    </li>
+    <li>The emergency and evacuation arrangements for that location</li>
+    <li>
+      Where class work is involved, which society, which survey, and whether the
+      contractor holds that society's service supplier approval for it
+    </li>
+  </ul>
+
+  <p>
+    Isolation is the one to insist on. The most serious risk in in-water work is not
+    depth, current or visibility — it is machinery starting while a diver is beside it.
+    That gets agreed with the vessel and the terminal before mobilisation, and confirmed
+    physically rather than over the radio.
+  </p>
+
+  <h2>How a job gets scoped and scheduled here</h2>
+
+  <p>
+    Most jobs on this coast are governed less by the diving than by three scheduling
+    constraints, and understanding them makes for a much more realistic conversation
+    about timing.
+  </p>
+
+  <p>
+    <strong>Your berth window.</strong> In-water work happens between other things:
+    cargo operations, bunkering, crew changes, surveys. The dive spread has to fit
+    around them and around whatever isolation the work requires. The earlier we know the
+    window, the more likely the job fits it.
+  </p>
+
+  <p>
+    <strong>Water conditions.</strong> Tide, wind direction, current, and recent
+    rainfall through the Arroyo Colorado and the Rio Grande all move visibility in the
+    channel. For hands-on work — cleaning, anode changes, rope clearance — this rarely
+    stops anything. For class survey work it is decisive, because the acceptance
+    criterion is a visibility criterion.
+  </p>
+
+  <p>
+    <strong>Weather and season.</strong> Atlantic hurricane season runs 1 June to 30
+    November, and on this coast that means a period each year when marine schedules are
+    provisional. It also means a predictable rhythm of work: readiness inspections and
+    mooring checks before a system, damage assessment and recovery after one.
+  </p>
+
+  <p>
+    For genuinely urgent work, none of the above is a reason not to call. Tell us what
+    is happening and we will tell you honestly what we can mobilise and when, including
+    when the answer is that conditions will not allow it safely.
+  </p>
+
+  <h2>What documentation you should expect</h2>
+
+  <p>
+    The dive is the smaller half of the job. What you can do afterwards depends almost
+    entirely on what was recorded, and this is where contractors differ most.
+  </p>
+
+  <p>
+    A report worth having identifies what was examined against the asset's own
+    references — frame numbers, compartment identifiers, berth and pile numbering — so
+    a finding can be relocated by someone who was not there. It describes condition
+    rather than grading it: "coating breakdown with light surface corrosion over
+    approximately two square metres, port side, frames 40–46" is actionable in a way
+    that "fair" is not. It is supported by stills and video with enough in frame to
+    establish both location and scale.
+  </p>
+
+  <p>
+    Most importantly, it states what was <em>not</em> examined and why. If visibility,
+    marine growth, an isolation that could not be obtained or an inaccessible space
+    prevented examination of something, that belongs in the report. This is the section
+    most often omitted and the one that matters most later, because a report that
+    implies coverage it did not achieve is actively worse than no report — an insurer,
+    a surveyor or a buyer will eventually test that implication.
+  </p>
+
+  <p>
+    Where a job is driven by an event rather than a schedule, the report should
+    separate what was observed from what is inferred, and separate observed damage from
+    pre-existing condition wherever the evidence supports it — and say clearly when it
+    does not.
+  </p>
+
+  <h2>What actually happens on the day</h2>
+
+  <p>
+    Owners and terminal staff who have not hosted a dive spread before are often
+    surprised by how much of the day is not diving. Setting expectations early avoids
+    the awkward conversation where a berth was booked for two hours and the work needs
+    five.
+  </p>
+
+  <p>
+    The crew arrives and sets up the spread on the quay or on a workboat: compressor and
+    air supply, umbilicals, comms, the panel, and the video and lighting if the job is
+    documented. Before anyone dresses in, the isolation is walked through with the
+    vessel or the terminal and physically confirmed — propulsion, thrusters, sea
+    suctions and overboard discharges locked out and tagged, with names against it. A
+    toolbox talk covers the task, the hazards specific to that berth, the comms plan and
+    the emergency arrangements.
+  </p>
+
+  <p>
+    Then the diver goes in, tended continuously, working to the plan while the
+    supervisor runs the dive from the surface. Where the job is documented, the video
+    feed is monitored live and the supervisor directs the diver to what needs recording
+    — which is why documented work takes longer than the same physical task done
+    without documentation. On class work, the attending surveyor may be watching the
+    same feed and asking for particular views.
+  </p>
+
+  <p>
+    Afterwards the spread is recovered, the isolation is formally handed back, and the
+    record is assembled. For a straightforward job the findings can be discussed the
+    same day; a written report with referenced imagery follows.
+  </p>
+
+  <p>
+    The practical implication for planning is that the water time is often the smallest
+    block in the day. When you are agreeing a berth window with us, the number that
+    matters is the total, not the dive.
+  </p>
+
+  <h2>Choosing between contractors</h2>
+
+  <p>
+    Commercial diving quotes are unusually hard to compare, because the same job
+    description can describe genuinely different work. Three things separate quotes far
+    more than the day rate does.
+  </p>
+
+  <p>
+    <strong>Team size and standard.</strong> A compliant surface-supplied air spread is
+    a minimum of three people. If one quote is materially cheaper than the others, the
+    first question is what has been left out — and the answer is usually the tender, the
+    documentation, or both.
+  </p>
+
+  <p>
+    <strong>What the deliverable actually is.</strong> "Inspection" can mean a diver
+    surfacing and telling you it looks fine, or it can mean a referenced written report
+    with stills, video, and an explicit statement of what could not be examined. Those
+    are different products at different prices, and only one of them is any use to a
+    surveyor, an insurer or a buyer. Establish which you are buying before you compare
+    numbers.
+  </p>
+
+  <p>
+    <strong>Local time on the water.</strong> Mobilisation from Houston to Brownsville
+    is roughly 300 miles of road for the spread and the crew, and that cost lands
+    somewhere in the price whether or not it is itemised. It also lands in the schedule:
+    a crew that is already on this coast can often work a berth window that a crew
+    travelling in cannot. This is the actual substance behind "local", and it is worth
+    asking any bidder where their people and their gear will be starting from.
+  </p>
+
+  <p>
+    We would rather you asked us these questions than took our word for the answers. A
+    buyer who knows what to ask gets a better job from everyone in the market, including
+    from us.
+  </p>
+
+  <h2>Industries we work for on this coast</h2>
+
+  <p>
+    The service list above is organised by technique. It is worth also saying who
+    actually calls, because the same service means something different depending on who
+    is asking.
+  </p>
+
+  <p>
+    <strong>Terminals and port facilities</strong> need berth and structure condition
+    known before it becomes a closure, and need work done without interrupting the
+    operation paying for the berth. <strong>Vessel operators, masters and agents</strong>
+    need the vessel trading, and need a defensible answer fast when something changes.
+    <strong>Marine contractors and dredging operations</strong> need dive support that
+    does not become the reason a programme slips.{' '}
+    <strong>Ship recycling and layberth operators</strong> — a genuinely large sector
+    here, given the port captures over 85% of US Navy and MARAD recycling — need
+    condition and integrity work on inactive tonnage and recovery around cutting berths.
+    <strong> The commercial fishing fleet</strong> needs running gear cleared quickly and
+    affordably, usually today. And <strong>industrial and municipal operators</strong>
+    need intakes and outfalls inspected and cleared before flow becomes a process
+    problem.
+  </p>
+
+  <p>
+    Those are different commercial conversations even when the dive is nearly identical,
+    which is why the enquiry matters more than the service name.
+  </p>
+
+  <h2>How to brief us</h2>
+
+  <p>
+    The most useful enquiry describes the situation, not the service. Tell us the
+    vessel or the structure, the berth, what you are seeing, and what decision the
+    answer needs to support. A dive that produces a report nobody can act on is a bad
+    outcome for both of us, and the way to avoid it is to agree at the enquiry stage
+    what question is actually being asked.
+  </p>
+
+  <p>
+    If the work is regulated by somebody else — a class society, a port state
+    inspection, an insurer — say so early and name them. The requirements differ
+    between societies and between survey types, and they determine the method, the
+    documentation and sometimes whether the job is feasible in the water at all.
+  </p>
+
+  <p>
+    It also helps to know what constraints you already have. A berth window that cannot
+    move, a sailing time, a surveyor who is only in town on a particular day, a charter
+    that ends on a date — these shape the plan more than the technical scope does, and
+    they are much cheaper to design around than to discover halfway through. If the
+    honest answer is that the constraint and the work do not fit together, we would
+    rather establish that on the phone than on the quay.
+  </p>
+
+  <p>
+    Finally, tell us what you already know. Previous inspection reports, the last
+    docking specification, a coating history, the vessel's own drawings, or simply what
+    the engineer thinks is going on — all of it narrows the scope and shortens the dive.
+    Time in the water is the expensive part, and anything that means less of it spent
+    searching is money you keep.
+  </p>
+
+  {
+    liveCount < services.length && (
+      <p class="build-note">
+        Detailed pages for the remaining services are being written and published in
+        batches. Services shown without a link are fully available — call{' '}
+        {business.phone.display} to discuss any of them.
+      </p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .group {
+    margin-bottom: var(--s-6);
+  }
+
+  .spoke-list {
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: 1fr;
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+
+  @media (min-width: 760px) {
+    .spoke-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .spoke-list li {
+    margin: 0;
+  }
+
+  .spoke-list a,
+  .spoke-list .pending {
+    display: block;
+    height: 100%;
+    padding: var(--s-4);
+    border-radius: var(--radius);
+    text-decoration: none;
+  }
+
+  .spoke-list a {
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    color: var(--c-navy-700);
+  }
+
+  .spoke-list a:hover {
+    border-color: var(--c-steel-500);
+    background: var(--c-steel-100);
+  }
+
+  .spoke-list .pending {
+    border: 1px dashed var(--c-line);
+    color: var(--c-muted);
+  }
+
+  .spoke-list strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    line-height: var(--lh-snug);
+  }
+
+  .rolled {
+    display: block;
+    margin-top: var(--s-2);
+    font-size: var(--t-xs);
+    color: var(--c-muted);
+    text-transform: lowercase;
+  }
+
+  .build-note {
+    padding: var(--s-4);
+    background: var(--c-surface);
+    border-left: 4px solid var(--c-steel-300);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: var(--t-sm);
+    color: var(--c-body);
+  }
+</style>

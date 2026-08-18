@@ -47,20 +47,47 @@ export async function loadPages() {
 }
 
 /**
- * Visible prose word count.
+ * Sitewide chrome — everything that is NOT this page's own writing.
  *
- * Strips script/style/nav/header/footer chrome first. Counting the whole document
- * would credit every page with the footer's service list and the nav — roughly
- * 300 words of boilerplate that is identical sitewide — and quietly inflate every
- * page toward the 3,000 floor without a word of unique content being written.
+ * Two checks depend on getting this list right:
+ *
+ *   WORD COUNT. Counting chrome would credit every page with the footer's service
+ *   list, the nav and the CTA — several hundred words that are identical sitewide —
+ *   and float every page toward the 3,000 floor without a word being written.
+ *
+ *   DUPLICATE SENTENCES. The CTA and related-links blocks render the same default
+ *   copy on every page by design. Scanning them would report a duplicate-content
+ *   failure on what is actually a correctly-working shared component, and the
+ *   genuine template seams the scanner exists to find would be lost in the noise.
+ *
+ * `.cta` and `.related` sit INSIDE <main> (they belong there for readers and for
+ * screen-reader flow), which is exactly why stripping by <main> alone is not enough.
  */
-export function contentWords(dom) {
+export const CHROME_SELECTORS = [
+  'script',
+  'style',
+  'nav',
+  'header',
+  'footer',
+  '.phonebar',
+  '.crumbs',
+  '.cta',
+  '.related',
+  '.build-note',
+];
+
+/** This page's own content, with all sitewide chrome removed. */
+export function mainContent(dom) {
   const clone = parse(dom.toString());
-  for (const sel of ['script', 'style', 'nav', 'header', 'footer', '.phonebar', '.crumbs']) {
+  for (const sel of CHROME_SELECTORS) {
     for (const el of clone.querySelectorAll(sel)) el.remove();
   }
-  const main = clone.querySelector('main') ?? clone;
-  const text = main.structuredText.replace(/\s+/g, ' ').trim();
+  return clone.querySelector('main') ?? clone;
+}
+
+/** Visible prose word count, chrome excluded. */
+export function contentWords(dom) {
+  const text = mainContent(dom).structuredText.replace(/\s+/g, ' ').trim();
   return text ? text.split(' ').length : 0;
 }
 

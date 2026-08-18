@@ -1,0 +1,148 @@
+---
+/**
+ * RelatedLinks — the M3 wiring contract, rendered from the taxonomy.
+ *
+ * Every spoke links UP to its hub, LATERALLY to genuine siblings, and DOWN to its
+ * own problem children. Doing this from `services.ts` rather than by hand means
+ * the wiring cannot rot as pages are added, and no page can be orphaned by a
+ * writer forgetting a link.
+ *
+ * Everything is filtered through `routeExists()`, so a section disappears rather
+ * than pointing at a page a later phase has not built yet.
+ */
+import type { Service } from '../data/services.ts';
+import { services } from '../data/services.ts';
+import { routeExists } from '../lib/routes.ts';
+
+const { service } = Astro.props as { service: Service };
+
+const problems = service.problems.filter((p) =>
+  routeExists(`/services/${service.slug}/${p.slug}/`)
+);
+
+const library = service.library.filter((t) => routeExists(`/marine-library/${t}/`));
+
+/**
+ * Siblings that are genuinely related, not just adjacent in an array: spokes that
+ * share a marine-library topic with this one. A prop page and an anode page are
+ * both "services" but a reader on one is not usually heading for the other, and
+ * link blocks built from array order are how a site ends up with 14 identical
+ * "related services" lists.
+ */
+const siblings = services
+  .filter((s) => s.slug !== service.slug)
+  .filter((s) => s.library.some((t) => service.library.includes(t)))
+  .filter((s) => routeExists(`/services/${s.slug}/`))
+  .slice(0, 6);
+
+const hubLive = routeExists('/services/');
+const anything = problems.length || library.length || siblings.length || hubLive;
+---
+
+{
+  anything && (
+    <nav class="related" aria-label="Related pages">
+      {problems.length > 0 && (
+        <div class="related-group">
+          <h2>Specific problems we get called for</h2>
+          <ul>
+            {problems.map((p) => (
+              <li>
+                <a href={`/services/${service.slug}/${p.slug}/`}>{p.name}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {siblings.length > 0 && (
+        <div class="related-group">
+          <h2>Related services</h2>
+          <ul>
+            {siblings.map((s) => (
+              <li>
+                <a href={`/services/${s.slug}/`}>{s.name}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {library.length > 0 && (
+        <div class="related-group">
+          <h2>Background reading</h2>
+          <ul>
+            {library.map((t) => (
+              <li>
+                <a href={`/marine-library/${t}/`}>{t.replace(/-/g, ' ')}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {hubLive && (
+        <p class="related-up">
+          <a href="/services/">← All commercial diving services</a>
+        </p>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .related {
+    margin-top: var(--s-7);
+    padding-top: var(--s-5);
+    border-top: 2px solid var(--c-line);
+  }
+
+  .related-group {
+    margin-bottom: var(--s-5);
+  }
+
+  .related h2 {
+    font-size: var(--t-lg);
+    margin-top: 0;
+    margin-bottom: var(--s-3);
+  }
+
+  .related ul {
+    display: grid;
+    gap: var(--s-2);
+    grid-template-columns: 1fr;
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+
+  @media (min-width: 700px) {
+    .related ul {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .related li {
+    margin: 0;
+  }
+
+  .related li a {
+    display: block;
+    padding: var(--s-3);
+    background: var(--c-surface);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--c-navy-700);
+    font-weight: 600;
+    font-size: var(--t-sm);
+  }
+
+  .related li a:hover {
+    background: var(--c-steel-100);
+  }
+
+  .related-up {
+    margin: 0;
+    font-weight: 600;
+  }
+</style>
