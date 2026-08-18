@@ -14,6 +14,7 @@ import { business, napPhone, hasAddress } from '../data/business.ts';
 import { services } from '../data/services.ts';
 import { territoryLocations } from '../lib/geo.ts';
 import { routeExists, liveLinks } from '../lib/routes.ts';
+import { logo } from '../data/media.ts';
 
 const nap = napPhone();
 const year = new Date().getFullYear();
@@ -39,7 +40,11 @@ const locationsHubLive = routeExists('/locations/');
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-col footer-nap">
-      <h2>{business.name}</h2>
+      <img class="footer-mark" src={logo.src} alt="" width="64" height="64" loading="lazy" />
+      <h2>
+        <span class="wordmark"><span class="wm-num">3</span>rd&nbsp;Coast</span>
+        <span class="footer-name-sub">Commercial Diving &amp; Salvage</span>
+      </h2>
       <p class="footer-tagline">{business.tagline}</p>
 
       <address>
@@ -171,27 +176,69 @@ const locationsHubLive = routeExists('/locations/');
     border-image: var(--rule) 1;
   }
 
+  /**
+   * Auto-fitting, NOT a fixed four-column track.
+   *
+   * The link columns are each conditional — "Services", "Company" and the
+   * locations list only render once those routes exist. A fixed 1.4fr/1fr/1fr/1fr
+   * grid therefore reserved an empty fourth column through the whole build-out
+   * and left the footer visibly lopsided. auto-fit means the footer is correctly
+   * balanced at every stage: three columns today, five at full spec, with no
+   * further edit.
+   */
   .footer-grid {
     display: grid;
-    gap: var(--s-6);
+    gap: var(--s-7) var(--s-6);
     grid-template-columns: 1fr;
+    align-items: start;
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 620px) {
     .footer-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
   }
+
   @media (min-width: 1000px) {
     .footer-grid {
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      grid-template-columns: minmax(280px, 1.6fr) repeat(auto-fit, minmax(170px, 1fr));
     }
+  }
+
+  /* The identity block spans the full width on the two-column phone layout. */
+  @media (min-width: 620px) and (max-width: 999px) {
+    .footer-nap {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .footer-mark {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid var(--c-border);
+    margin-bottom: var(--s-4);
+    filter: brightness(1.3) contrast(1.1);
   }
 
   .site-footer h2 {
     color: var(--c-text);
-    font-size: var(--t-lg);
-    margin-bottom: var(--s-2);
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    line-height: 1.15;
+    margin: 0 0 var(--s-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+
+  .footer-name-sub {
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--c-muted-2);
   }
   .site-footer h3 {
     color: var(--c-muted-2);
@@ -205,7 +252,8 @@ const locationsHubLive = routeExists('/locations/');
 
   .footer-tagline {
     color: var(--c-muted-2);
-    margin-bottom: var(--s-4);
+    margin-bottom: var(--s-5);
+    max-width: 34ch;
   }
 
   .site-footer ul {
@@ -230,7 +278,9 @@ const locationsHubLive = routeExists('/locations/');
     font-style: normal;
     display: flex;
     flex-direction: column;
-    gap: var(--s-1);
+    gap: var(--s-2);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-border-soft);
   }
   .nap-line {
     display: block;

@@ -284,6 +284,27 @@ h4 {
   }
 }
 
+/**
+ * The wordmark. The numeral is set larger than the "rd" it leads, which is how
+ * the emblem itself reads — "3RD COAST" arcs across the badge with the 3 as the
+ * anchor. Because both glyphs share a baseline, enlarging the numeral alone
+ * makes it read as a mark rather than as a typo.
+ */
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.wordmark .wm-num {
+  font-size: 1.48em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  /* Keeps the taller glyph from adding leading to its line box. */
+  line-height: 0.7;
+  margin-right: 0.02em;
+}
+
 /** Small uppercase sans label. The counterpoint to Georgia. */
 .eyebrow {
   display: inline-block;

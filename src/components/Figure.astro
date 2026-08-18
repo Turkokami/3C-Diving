@@ -49,8 +49,12 @@ const { src, srcset } = photoSrc(photo);
 </figure>
 
 <style>
+  /**
+   * Centred, not flush left. The figure is capped at 900px while the page wrap
+   * runs to 1240px, so left-aligning left a lopsided gap down the right side.
+   */
   .figure {
-    margin: var(--s-6) 0;
+    margin: var(--s-7) auto;
     max-width: 900px;
   }
 
@@ -75,6 +79,7 @@ const { src, srcset } = photoSrc(photo);
 
   figcaption {
     margin-top: var(--s-4);
+    margin-inline: auto;
     padding-left: var(--s-4);
     border-left: 2px solid var(--c-border-hi);
     font-size: var(--t-sm);

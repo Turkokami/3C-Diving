@@ -80,7 +80,13 @@ ImageDraw.Draw(circle).ellipse((0, 0, 131, 131), fill=255)
 card.paste(logo, (76, 74), circle)
 
 # ── Type ─────────────────────────────────────────────────────────────────────
-d.text((228, 92), '3RD COAST', font=load_font(38, True), fill=(255, 255, 255))
+# The numeral is set larger than the letters that follow it, matching the site
+# wordmark and the emblem. Drawn in two runs so the sizes can differ.
+_big = load_font(56, True)
+_small = load_font(38, True)
+d.text((228, 78), '3', font=_big, fill=(255, 255, 255))
+_w = d.textlength('3', font=_big)
+d.text((228 + _w + 1, 92), 'RD COAST', font=_small, fill=(255, 255, 255))
 d.text((230, 142), 'COMMERCIAL DIVING & SALVAGE',
        font=load_font(19), fill=(169, 179, 189))
 
