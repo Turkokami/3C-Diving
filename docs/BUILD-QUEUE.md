@@ -1,6 +1,6 @@
 # Build queue
 
-**Updated:** August 17, 2026
+**Updated:** August 18, 2026
 **Batch discipline:** 10 pages per production session. Every batch passes `npm run build && npm run verify` before the next begins.
 
 **To resume:** read `docs/CONTENT_BRIEF.md`, then `src/content/services/underwater-inspection.md` (the exemplar), then take the next unchecked item below.
@@ -13,11 +13,11 @@
 |---|---|---|---|
 | 0 · Defect remediation | audit, taxonomy, ledger | ✅ | — |
 | 1 · Entity & schema foundation | infra, graph, harness, first green deploy | ✅ | — |
-| 2 · Money pages | 18 | 2 | 16 |
+| 2 · Money pages | 18 | 4 | 14 |
 | 3 · Geographic surface | 38 | 0 | 38 |
 | 4 · Authority layer | 7 | 0 | 7 — **blocked on B3** |
 | 5 · Blue-ocean clusters | 44 | 0 | 44 |
-| | **107** | **2** | **105** |
+| | **107** | **4** | **103** |
 
 Live: <https://3-c-diving.vercel.app> · Target domain: 3cdiving.com (not yet pointed)
 
@@ -29,11 +29,11 @@ Hub is built and over the floor, so spokes may now proceed (Part 3.1 satisfied).
 
 - [x] `/services/` — hub, 3,010 words
 - [x] `/services/underwater-inspection/` — **exemplar**, 3,044 words
-- [ ] `/services/underwater-welding/` — highest-value term in the vertical. Must be honest about wet weld classes vs dry. Needs AWS D3.6M research first.
-- [ ] `/services/hull-cleaning/` — recurring revenue. VGP/biofouling angle; needs VGP in-water cleaning research.
+- [x] `/services/underwater-welding/` — 3,187 words. AWS D3.6M classes A/B/O researched.
+- [ ] `/services/hull-cleaning/` — recurring revenue. **VGP/VIDA research now banked in RESEARCH-NOTES** — write next.
 - [ ] `/services/propeller-services/` — pairs with the 140-boat shrimp fleet. Fast-converting.
 - [ ] `/services/anode-replacement/` — ties to the corrosion library cluster.
-- [ ] `/services/uwild-in-water-survey/` — **blue ocean.** Research is already in RESEARCH-NOTES.md.
+- [x] `/services/uwild-in-water-survey/` — 3,053 words. ABS requirements + the visibility angle.
 - [ ] `/services/marine-salvage/` — strong case-study candidate (Phase 4).
 - [ ] `/services/sea-chest-services/` — overboard blanking / cofferdam folds in here.
 - [ ] `/services/port-diving/` — wire hard to the ports & terminals vertical.
