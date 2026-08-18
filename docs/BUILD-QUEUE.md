@@ -77,7 +77,9 @@ Hub is built and over the floor, so spokes may now proceed (Part 3.1 satisfied).
 - [ ] Route + collection for compliance, marine-library, commercial, case-studies
       (prefixes are already registered in `plugins/rehype-live-links.mjs`)
 - [ ] `scripts/check-content.mjs` — assert every content slug matches `services.ts`
-- [ ] Real field photography pipeline + `<Figure>` component (M6/M7)
+- [x] Real field photography pipeline + `<Figure>` component (M6/M7) - done: 3 photos
+      in `src/data/media.ts`, WebP at 800w/1600w, og:image rebuilt from a real frame.
+      **Still need many more** - three frames of one job cannot cover 14 services (Q26).
 - [ ] Empty the `FOUNDATION_EXEMPT` set in `check-wordcount.mjs` — currently exempts
       `/` and `/404/`. **The Phase 2 gate is not truly passed until `/` is rewritten
       to the full floor and removed from that list.**

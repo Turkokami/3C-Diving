@@ -131,11 +131,20 @@ In territory, awaiting research: `port-isabel` · `south-padre-island` · `brazo
 
 ## 9. Images (M6, M7)
 
-- Alt = **[what's shown] + [action/context] + [local]**, ≤125 chars, describing what the image **actually shows, judged by sight**. Never write alt from a filename.
-- One inline image per ~300–400 words; hero on-topic and geo-matched.
-- ⛔ **No field photography exists yet.** Do not write alt text describing a dive that cannot be evidenced. The scaffold shipped alt text describing "a diver entering the water at the Port of Brownsville" for an image that was never taken — that is a fabrication baked into every page's `og:image`. Real photos are the single highest-value asset gap in the ledger.
+- Alt = **[what's shown] + [action/context] + [local]**, <=125 chars, describing what the image **actually shows, judged by sight**. Never write alt from a filename.
+- One inline image per ~300-400 words; hero on-topic and geo-matched.
+- **Photos live in `src/data/media.ts`, not in the page.** Import the `photos` object and use `<Figure photo={photos.diverEntry} />`. Alt text belongs with the photo, once - retyping it per page is how one image ends up described three different ways, one of which is wrong.
+- Set `priority={true}` on the single largest above-the-fold image and nothing else.
+- Use `photosFor('service-slug')` to find frames that genuinely illustrate a service. **An empty result is a valid answer** - a hull-cleaning page should not carry a marine-construction photo just to have an image. A wrong photo is worse than no photo.
 
----
+### What we have
+
+Three real photographs from one marine construction job, supplied by the owner:
+`diverEntry` (surface-supplied entry with tender), `diverTender` (crew on a barge with crawler crane and driven piles), `bargeDusk` (barge crew at dusk, long-reach excavator, causeway behind).
+
+**Do not assert where they were taken.** The causeway reads as Queen Isabella, which would place the work at Port Isabel, but that is an inference. Every entry carries `locationConfirmed: false` and questionnaire Q27 asks the owner to confirm. Until then, describe the scene, not the place.
+
+**We still need far more.** Three frames of one job cannot illustrate fourteen services. Questionnaire Q26 asks for more; until they arrive, a page with no genuinely relevant photo ships without one.
 
 ## 10. Before you call a page done
 
