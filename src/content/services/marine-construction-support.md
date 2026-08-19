@@ -187,6 +187,20 @@ Construction generates disputes, and underwater work is disproportionately repre
 
 Where the client's engineer has a required format, we report into it. Where they do not, the standard is the same as for any inspection: located against the structure's own references, described rather than graded, and explicit about what was not examined.
 
+## Commissioning and handover
+
+The end of a marine construction job has an underwater component that is frequently squeezed, because by that stage everybody wants to demobilise.
+
+**Final as-built verification.** Confirming the completed work below the waterline matches the design — position, level, alignment, connections, and that temporary works have actually been removed rather than assumed removed. Cut-off piles, template fixings, guide frames and rigging left behind become somebody's obstruction later, and they are far easier to deal with now.
+
+**Clearance of the working area.** Confirming the bed around the completed structure is clear of dropped material, offcuts and debris. On a job that has run months, the accumulation is usually greater than anyone expects.
+
+**Bed levels as left.** The profile around a new structure at handover is the baseline every future scour assessment is measured against. Establishing it while the survey team is still on site costs very little; reconstructing it in three years is impossible.
+
+**The condition record.** A documented state of the finished work at handover, which is what protects the contractor as much as the client. It establishes what was delivered and in what condition, at a date, before anybody else has operated on it.
+
+The last point is worth making to contractors directly: this record is at least as valuable to you as to your client. Damage discovered eighteen months later is a much harder conversation without evidence of the condition at handover, and that evidence only exists if somebody made it.
+
 ## Safety on a construction site
 
 Marine construction concentrates more simultaneous hazards than any other work in this trade, and they interact.
