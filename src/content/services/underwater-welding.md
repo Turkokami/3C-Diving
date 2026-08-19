@@ -220,7 +220,7 @@ Owners comparing in-water welding quotes are often comparing genuinely different
 
 The useful comparison is not the number at the bottom. It is: what class is the weld, is there a qualified procedure behind it, who is verifying it, and what happens if the inspection finds the surrounding plate is not sound enough to weld to.
 
-## Working with us
+## Briefing a repair
 
 Tell us the vessel or structure, the item, what it does, who has to accept the repair, and what your timeline actually is. Photographs help enormously, even poor ones from the deck.
 
