@@ -74,6 +74,15 @@ export const CHROME_SELECTORS = [
   '.cta',
   '.related',
   '.build-note',
+  /**
+   * Photo captions come from the media registry (src/data/media.ts), so the same
+   * frame carries the same caption everywhere it legitimately appears. When one
+   * photo genuinely illustrates four services, that is the registry working as
+   * designed — not a writer reskinning a template. Counting it would both credit
+   * each page with words it did not write and fire the duplicate scanner on a
+   * correctly-shared asset, drowning out the real seams it exists to find.
+   */
+  'figcaption',
 ];
 
 /** This page's own content, with all sitewide chrome removed. */
