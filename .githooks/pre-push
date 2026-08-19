@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# pre-push — the acceptance gate, enforced by git rather than by memory.
+#
+# WHY THIS EXISTS. On 18 August 2026 a batch of pages was pushed with the
+# word-count check still failing, because the commit was chained after
+# `npm run verify` in a shell without gating on its exit code. The gate reported
+# the failure correctly and the push happened anyway.
+#
+# A check that only works when the person running it remembers to read the output
+# is not a gate. This makes it one: the build and the full harness run before
+# every push, and a non-zero exit blocks it.
+#
+# Enable once per clone:  git config core.hooksPath .githooks
+# Bypass deliberately:    git push --no-verify   (say why in the commit message)
+
+set -e
+
+echo "── pre-push: building ─────────────────────────────────────────────"
+npm run build >/dev/null 2>&1 || {
+  echo "✗ build failed — push blocked. Run 'npm run build' to see why."
+  exit 1
+}
+
+echo "── pre-push: verification harness ─────────────────────────────────"
+if ! npm run verify; then
+  echo ""
+  echo "✗ ACCEPTANCE GATE FAILED — push blocked."
+  echo "  Fix the failures above, or push with --no-verify and say why."
+  exit 1
+fi
+
+echo "✓ gate green — pushing"

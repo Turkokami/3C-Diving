@@ -1,6 +1,6 @@
 # Build queue
 
-**Updated:** August 18, 2026
+**Updated:** August 18, 2026 (evening)
 **Batch discipline:** 10 pages per production session. Every batch passes `npm run build && npm run verify` before the next begins.
 
 **To resume:** read `docs/CONTENT_BRIEF.md`, then `src/content/services/underwater-inspection.md` (the exemplar), then take the next unchecked item below.
@@ -13,11 +13,11 @@
 |---|---|---|---|
 | 0 · Defect remediation | audit, taxonomy, ledger | ✅ | — |
 | 1 · Entity & schema foundation | infra, graph, harness, first green deploy | ✅ | — |
-| 2 · Money pages | 18 | 4 | 14 |
+| 2 · Money pages | 18 | 15 | 3 |
 | 3 · Geographic surface | 38 | 0 | 38 |
 | 4 · Authority layer | 7 | 0 | 7 — **blocked on B3** |
 | 5 · Blue-ocean clusters | 44 | 0 | 44 |
-| | **107** | **4** | **103** |
+| | **107** | **15** | **92** |
 
 Live: <https://3-c-diving.vercel.app> · Target domain: 3cdiving.com (not yet pointed)
 
@@ -30,18 +30,20 @@ Hub is built and over the floor, so spokes may now proceed (Part 3.1 satisfied).
 - [x] `/services/` — hub, 3,010 words
 - [x] `/services/underwater-inspection/` — **exemplar**, 3,044 words
 - [x] `/services/underwater-welding/` — 3,187 words. AWS D3.6M classes A/B/O researched.
-- [ ] `/services/hull-cleaning/` — recurring revenue. **VGP/VIDA research now banked in RESEARCH-NOTES** — write next.
-- [ ] `/services/propeller-services/` — pairs with the 140-boat shrimp fleet. Fast-converting.
-- [ ] `/services/anode-replacement/` — ties to the corrosion library cluster.
+- [x] `/services/hull-cleaning/` — 3,080 words
+- [x] `/services/propeller-services/` — 3,185 words
+- [x] `/services/anode-replacement/` — 3,059 words
 - [x] `/services/uwild-in-water-survey/` — 3,053 words. ABS requirements + the visibility angle.
-- [ ] `/services/marine-salvage/` — strong case-study candidate (Phase 4).
-- [ ] `/services/sea-chest-services/` — overboard blanking / cofferdam folds in here.
-- [ ] `/services/port-diving/` — wire hard to the ports & terminals vertical.
-- [ ] `/services/pile-dock-pier-inspection/` — infrastructure owners, marine contractors.
-- [ ] `/services/marine-construction-support/` — pairs with LNG build-out and dredging.
-- [ ] `/services/emergency-underwater-response/` — `ctaVariant: emergency`. Minimal friction.
-- [ ] `/services/search-and-recovery/` — handle sensitive cases carefully.
-- [ ] `/services/underwater-survey/` — industrial intake/outfall folds in here.
+- [x] `/services/marine-salvage/` — 3,054 words
+- [x] `/services/sea-chest-services/` — 3,007 words
+- [x] `/services/port-diving/` — 3,0xx words
+- [x] `/services/pile-dock-pier-inspection/` — 3,123 words
+- [x] `/services/marine-construction-support/` — 3,137 words
+- [x] `/services/emergency-underwater-response/` — 3,110 words
+- [x] `/services/search-and-recovery/` — 3,059 words
+- [x] `/services/underwater-survey/` — 3,0xx words
+**All 14 service spokes complete.** Remaining Phase 2:
+
 - [ ] `/our-standards/` — defined-term standards + terms. **Never an unqualified warranty.**
 - [ ] `/about/` — operating story. Thin until B1/B3 land; write what is honest now.
 - [ ] `/contact/` — **blocked on P1-3:** confirm the existing quote-form endpoint before building, so lead tracking survives the rebuild.
