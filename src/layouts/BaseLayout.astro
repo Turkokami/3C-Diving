@@ -20,6 +20,7 @@
  *   - meta description cut on a SENTENCE boundary, never mid-word
  *   - canonical built by `absUrl()`, so it always matches the served trailing slash
  */
+import SpeedInsights from '@vercel/speed-insights/astro';
 import { business } from '../data/business.ts';
 import { buildGraph, serialiseGraph, absUrl, type Crumb, type Faq, type PrimaryEntity } from '../lib/schema.ts';
 import Header from '../components/Header.astro';
@@ -158,6 +159,8 @@ const htmlLang = lang === 'es' ? 'es-US' : 'en-US';
       double-escapes the graph and renders it as visible text on the page.
     -->
     <script type="application/ld+json" is:inline set:html={jsonld} />
+    {/* Vercel Speed Insights (free tier): first-party page-speed readings, cookieless. */}
+    <SpeedInsights />
   </head>
 
   <body>
